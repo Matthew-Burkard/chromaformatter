@@ -4,5 +4,5 @@ dist
 .vscode
 *__pycache__
 *.log
-*chroma-logger.egg-info
 *sandbox
+/src/chroma_logging.egg-info/

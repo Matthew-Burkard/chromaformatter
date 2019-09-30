@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='colored-logging',
+    name='chroma-logging',
     version='1.0',
     url='https://gitlab.com/mburkard/chroma-logging',
     license='MIT',
@@ -14,4 +14,3 @@ setup(
     zip_safe=False,
     install_requires=['sty']
 )
-
