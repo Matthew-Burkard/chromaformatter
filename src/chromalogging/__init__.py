@@ -58,6 +58,7 @@ def _formatter_message(msg, use_color):
 
 
 class ColoredFormatter(Formatter):
+
     def __init__(self, msg, use_color):
         msg = _formatter_message(msg, use_color)
         Formatter.__init__(self, msg)
@@ -68,10 +69,10 @@ class ColoredFormatter(Formatter):
         if record.levelno not in COLOR_MAP:
             return Formatter.format(self, record)
         bc = COLOR_MAP[BRACKET]
-        ic = COLOR_MAP[ARGS]
+        ac = COLOR_MAP[ARGS]
         lc = COLOR_MAP[record.levelno]
         record.msg = lc + record.msg
         if record.args:
-            record.msg = re.sub(r'{}', f'{bc}[{ic}%s{bc}]{lc}', record.msg)
+            record.msg = re.sub(r'{}', f'{bc}[{ac}%s{bc}]{lc}', record.msg)
         record.levelname = f'{lc}{record.levelname}{RESET_SEQ}'
         return Formatter.format(self, record)
