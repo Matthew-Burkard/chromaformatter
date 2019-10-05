@@ -3,6 +3,6 @@ dist
 .idea
 .vscode
 *__pycache__
-*.log
+*log/
 *sandbox
 *.egg-info/
