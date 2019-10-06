@@ -15,5 +15,6 @@ setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License'
     ],
-    install_requires=['sty']
+    install_requires=['sty'],
+    zip_safe=False
 )
