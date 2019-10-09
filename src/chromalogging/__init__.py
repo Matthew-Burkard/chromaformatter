@@ -5,7 +5,6 @@ from sty import fg, rs, ef
 
 _COLOR_INPUT = '{}'
 
-all_bold = False
 RESET_SEQ = rs.all
 BOLD_SEQ = ef.bold
 ARGS = -10
@@ -51,9 +50,10 @@ _COLOR_WORD_TO_COLOR = {
 
 class ChromaFormatter(Formatter):
 
-    def __init__(self, msg, use_color):
+    def __init__(self, msg, use_color, all_bold=False):
         self.use_color = use_color
-        msg = _formatter_message(msg, use_color)
+        self.all_bold = BOLD_SEQ if all_bold else ''
+        msg = _formatter_message(msg, use_color, self.all_bold)
         super().__init__(msg)
 
     def format(self, record):
@@ -62,9 +62,9 @@ class ChromaFormatter(Formatter):
         if not self.use_color or record.levelno not in color_map:
             record.msg = re.sub(r'{}', '[%s]', record.msg)
             return Formatter.format(self, record)
-        bc = color_map[BRACKET] + _b()
-        ac = color_map[ARGS] + _b()
-        lc = color_map[record.levelno] + _b()
+        bc = color_map[BRACKET] + self.all_bold
+        ac = color_map[ARGS] + self.all_bold
+        lc = color_map[record.levelno] + self.all_bold
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'{}', f'{bc}[{ac}%s{bc}]{lc}', record.msg)
@@ -86,17 +86,13 @@ def _init_record(record):
         record.consumed = True
 
 
-def _formatter_message(msg, use_color):
+def _formatter_message(msg, use_color, all_bold):
     if use_color:
-        msg = f'{_b()}{msg}$RESET'
-        msg = re.sub(r'\$(RESET|R)', RESET_SEQ + _b(), msg)
+        msg = f'{all_bold}{msg}$RESET'
+        msg = re.sub(r'\$(RESET|R)', RESET_SEQ + all_bold, msg)
         msg = re.sub(r'\$(BOLD|B)', BOLD_SEQ, msg)
         for color_word, color in _COLOR_WORD_TO_COLOR.items():
-            msg = msg.replace(f'${color_word}', color + _b())
+            msg = msg.replace(f'${color_word}', color + all_bold)
     else:
         msg = re.sub(r'\$[A-Z_]+\b', '', msg)
     return msg
-
-
-def _b():
-    return BOLD_SEQ if all_bold else ''
