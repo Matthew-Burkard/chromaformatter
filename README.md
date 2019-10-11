@@ -1,7 +1,8 @@
 # Chroma Logging
 ### A wrapper for the standard python logging module to add color.
 
-![Demo](docs/chroma_demo.png)
+![Demo](docs/chroma_demo-colored.png)
+![Demo](docs/chroma_demo-uncolored.png)
 
 ## Usage
 Chroma Logging is designed work just like the regular logging module
