@@ -89,8 +89,8 @@ def _formatter_message(msg, use_color, all_bold):
     if use_color:
         msg = f'{all_bold}{msg}$RESET'
         msg = _adjust_format_lengths(msg, use_color, all_bold)
-        msg = re.sub(r'\$(RESET|R)', RESET_SEQ + all_bold, msg)
-        msg = re.sub(r'\$(BOLD|B)', BOLD_SEQ, msg)
+        msg = re.sub(r'\$(RESET|R(?!ED))', RESET_SEQ + all_bold, msg)
+        msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD_SEQ, msg)
         for color_word, color in _COLOR_WORD_TO_COLOR.items():
             msg = msg.replace(f'${color_word}', color + all_bold)
     else:

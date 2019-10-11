@@ -6,7 +6,8 @@
 ## Usage
 Chroma Logging is designed work just like the regular logging module
 except instead of a regular Formatter you use ChromaFormatter which
-takes a boolean to determine whether or not to apply color.
+takes a boolean to determine whether or not to apply color, and another
+boolean to determine whether to log in all bold.
 
 Then can include colors in the format string with a with $COLOR.
 ```python
@@ -14,12 +15,12 @@ import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = '[$GREEN%(asctime)s$R][%(levelname)-6s$R]: %(message)s ' \
-             '$R[$MAGENTA%(filename)s$R:$MAGENTA%(lineno)-d$R]'
-stream_formatter = logging.ChromaFormatter(log_format, True)
-stream_handler = logging.StreamHandler(stream=sys.stdout)
-stream_handler.setFormatter(stream_formatter)
-log.addHandler(stream_handler)
+log_format = '[$GREEN%(asctime)s$R][%(levelname)-7s$R][$MAGENTA' \
+             '%(filename)s$R:$MAGENTA%(lineno)-d$R]: %(message)s'
+formatter = logging.ChromaFormatter(log_format, use_color=True, all_bold=True)
+handler = logging.StreamHandler(stream=sys.stdout)
+handler.setFormatter(formatter)
+log.addHandler(handler)
 ```
 
 The colors supported are:
@@ -50,10 +51,3 @@ logging.color_map[logging.INFO] = logging.Colors.CYAN
 logging.color_map[logging.BRACKET] = logging.Colors.RED
 logging.color_map[logging.ARGS] = logging.Colors.MAGENTA
 ```
-
-Logs can be made completely bold by default:
-```python
-logging.all_bold = True
-```
-This has to be set before the ChromaFormatter is initialized or it will
-only work for the logging level, brackets, and args.

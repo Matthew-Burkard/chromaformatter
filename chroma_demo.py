@@ -4,8 +4,8 @@ from src import chromalogging as logging
 
 if __name__ == '__main__':
     log = logging.getLogger()
-    log_format = '[$GREEN%(asctime)s$R][%(levelname)-s$R][$MAGENTA' \
-                 '%(filename)s$R:$MAGENTA%(lineno)-d$R]: %(message)s '
+    log_format = '[$GREEN%(asctime)s$R][%(levelname)-7s$R][$MAGENTA' \
+                 '%(filename)s$R:$MAGENTA%(lineno)-d$R]: %(message)s'
     file_formatter = logging.ChromaFormatter(log_format, False, False)
     file_handler = logging.FileHandler('log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     log.warning('This is a {} message.', 'warning')
     log.error('This is an {} message.', 'error')
     log.critical('This is a {} message.', 'critical')
-    log.info(f'Debug message with {"regular"} %s args.', 'formatting')
+    log.info(f'Info message with {"regular"} %s args.', 'formatting')
 
     logging.color_map[logging.INFO] = logging.Colors.CYAN
     logging.color_map[logging.BRACKET] = logging.Colors.RED
