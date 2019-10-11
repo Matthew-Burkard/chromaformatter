@@ -4,9 +4,9 @@ from src import chromalogging as logging
 
 if __name__ == '__main__':
     log = logging.getLogger()
-    log_format = '[$GREEN%(asctime)s$R][%(levelname)-6s$R]: %(message)s ' \
-                 '$R[$MAGENTA%(filename)s$R:$MAGENTA%(lineno)-d$R]'
-    file_formatter = logging.ChromaFormatter(log_format, False, True)
+    log_format = '[$GREEN%(asctime)s$R][%(levelname)-s$R][$MAGENTA' \
+                 '%(filename)s$R:$MAGENTA%(lineno)-d$R]: %(message)s '
+    file_formatter = logging.ChromaFormatter(log_format, False, False)
     file_handler = logging.FileHandler('log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
     stream_formatter = logging.ChromaFormatter(log_format, True, True)

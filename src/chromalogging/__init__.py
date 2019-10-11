@@ -3,13 +3,6 @@ from logging import *
 
 from sty import fg, rs, ef
 
-_COLOR_INPUT = '{}'
-
-RESET_SEQ = rs.all
-BOLD_SEQ = ef.bold
-ARGS = -10
-BRACKET = -20
-
 
 class Colors:
     BLACK = fg.black
@@ -22,8 +15,13 @@ class Colors:
     MAGENTA = fg.magenta
     CYAN = fg.cyan
     WHITE = fg.white
-    RESET = RESET_SEQ
+    RESET = rs.all
 
+
+RESET_SEQ = rs.all
+BOLD_SEQ = ef.bold
+ARGS = -10
+BRACKET = -20
 
 color_map = {
     DEBUG: Colors.LI_BLUE,
@@ -35,6 +33,7 @@ color_map = {
     BRACKET: Colors.GREEN
 }
 
+_COLOR_INPUT = '{}'
 _COLOR_WORD_TO_COLOR = {
     'BLACK': Colors.BLACK,
     'RED': Colors.RED,
@@ -89,10 +88,22 @@ def _init_record(record):
 def _formatter_message(msg, use_color, all_bold):
     if use_color:
         msg = f'{all_bold}{msg}$RESET'
+        msg = _adjust_format_lengths(msg, use_color, all_bold)
         msg = re.sub(r'\$(RESET|R)', RESET_SEQ + all_bold, msg)
         msg = re.sub(r'\$(BOLD|B)', BOLD_SEQ, msg)
         for color_word, color in _COLOR_WORD_TO_COLOR.items():
             msg = msg.replace(f'${color_word}', color + all_bold)
     else:
         msg = re.sub(r'\$[A-Z_]+\b', '', msg)
+    return msg
+
+
+def _adjust_format_lengths(msg, use_color, all_bold):
+    length_search = re.search(r'%\(levelname\)-([0-9]+)s', msg)
+    if not length_search:
+        return msg
+    length = int(length_search.group(1))
+    length += 9 if use_color else 0
+    length += 4 if all_bold else 0
+    msg = re.sub(r'%\((levelname)\)-([0-9]+)s', fr'%(\1)-{length}s', msg)
     return msg
