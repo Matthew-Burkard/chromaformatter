@@ -10,6 +10,7 @@ setup(
     description='Python logging module wrapper with colored output.',
     package_dir={'': 'src'},
     packages=['chromalogging'],
+    long_description_content_type='text/markdown',
     long_description=open('README.md').read(),
     classifiers=[
         'Programming Language :: Python :: 3',
