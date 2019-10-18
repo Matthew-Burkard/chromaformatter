@@ -1,49 +1,40 @@
 import re
 from logging import *
 
-from sty import fg, rs, ef
+from chromalogging.ansi import *
 
-
-class Colors:
-    BLACK = fg.black
-    RED = fg.red
-    LI_RED = fg.li_red
-    GREEN = fg.green
-    YELLOW = fg.yellow
-    LI_BLUE = fg.li_blue
-    BLUE = fg.blue
-    MAGENTA = fg.magenta
-    CYAN = fg.cyan
-    WHITE = fg.white
-    RESET = rs.all
-
-
-RESET_SEQ = rs.all
-BOLD_SEQ = ef.bold
 ARGS = -10
 BRACKET = -20
 
 color_map = {
-    DEBUG: Colors.LI_BLUE,
-    INFO: Colors.WHITE,
-    WARNING: Colors.YELLOW,
-    ERROR: Colors.LI_RED,
-    CRITICAL: Colors.RED,
-    ARGS: Colors.RESET,
-    BRACKET: Colors.GREEN
+    DEBUG: LI_BLUE,
+    INFO: WHITE,
+    WARNING: YELLOW,
+    ERROR: LI_RED,
+    CRITICAL: RED,
+    ARGS: CYAN,
+    BRACKET: RESET
 }
 
 _COLOR_INPUT = '{}'
 _COLOR_WORD_TO_COLOR = {
-    'BLACK': Colors.BLACK,
-    'RED': Colors.RED,
-    'GREEN': Colors.GREEN,
-    'YELLOW': Colors.YELLOW,
-    'BLUE': Colors.BLUE,
-    'MAGENTA': Colors.MAGENTA,
-    'CYAN': Colors.CYAN,
-    'WHITE': Colors.WHITE,
-    'RESET': Colors.RESET
+    'BLACK': BLACK,
+    'RED': RED,
+    'GREEN': GREEN,
+    'YELLOW': YELLOW,
+    'BLUE': BLUE,
+    'MAGENTA': MAGENTA,
+    'CYAN': CYAN,
+    'WHITE': WHITE,
+    'RESET': RESET,
+    'LI_BLACK': LI_BLACK,
+    'LI_RED': LI_RED,
+    'LI_GREEN': LI_GREEN,
+    'LI_YELLOW': LI_YELLOW,
+    'LI_BLUE': LI_BLUE,
+    'LI_MAGENTA': LI_MAGENTA,
+    'LI_CYAN': LI_CYAN,
+    'LI_WHITE': LI_WHITE,
 }
 
 
@@ -51,7 +42,7 @@ class ChromaFormatter(Formatter):
 
     def __init__(self, msg, use_color, all_bold=False):
         self.use_color = use_color
-        self.all_bold = BOLD_SEQ if all_bold else ''
+        self.all_bold = BOLD if all_bold else ''
         msg = _formatter_message(msg, use_color, self.all_bold)
         super().__init__(msg)
 
@@ -67,7 +58,7 @@ class ChromaFormatter(Formatter):
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'{}', f'{bc}[{ac}%s{bc}]{lc}', record.msg)
-        record.levelname = f'{lc}{record.levelname}{RESET_SEQ}'
+        record.levelname = f'{lc}{record.levelname}{RESET}'
         return Formatter.format(self, record)
 
 
@@ -89,8 +80,8 @@ def _formatter_message(msg, use_color, all_bold):
     if use_color:
         msg = f'{all_bold}{msg}$RESET'
         msg = _adjust_format_lengths(msg, use_color, all_bold)
-        msg = re.sub(r'\$(RESET|R(?!ED))', RESET_SEQ + all_bold, msg)
-        msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD_SEQ, msg)
+        msg = re.sub(r'\$(RESET|R(?!ED))', RESET + all_bold, msg)
+        msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
         for color_word, color in _COLOR_WORD_TO_COLOR.items():
             msg = msg.replace(f'${color_word}', color + all_bold)
     else:

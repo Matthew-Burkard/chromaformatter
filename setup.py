@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='chromalogging',
-    version='0.0.1',
+    version='0.0.2',
     url='https://gitlab.com/mburkard/chroma-logging',
     license='MIT',
     author='Matthew Burkard',
@@ -16,6 +16,5 @@ setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License'
     ],
-    install_requires=['sty'],
     zip_safe=False
 )
