@@ -116,21 +116,20 @@ def _process_format_message(msg, use_color, all_bold):
     True else they will be replaced with empty strings.
     :type use_color: bool
 
-    :param all_bold: Each color will be that color + bold if True.
-    :type all_bold: bool
+    :param all_bold: Bold sequence or empty string.
+    :type all_bold: str
 
     :return: The processed msg.
     :rtype: str
     """
-    if use_color:
-        msg = f'{all_bold}{msg}$RESET'
-        msg = _adjust_format_lengths(msg, use_color, all_bold)
-        msg = re.sub(r'\$(RESET|R(?!ED))', RESET + all_bold, msg)
-        msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
-        for color_word, color in _COLOR_WORD_TO_COLOR.items():
-            msg = msg.replace(f'${color_word}', color + all_bold)
-    else:
-        msg = re.sub(r'\$[A-Z_]+\b', '', msg)
+    if not use_color:
+        return re.sub(r'\$[A-Z_]+\b', '', msg)
+    msg = f'{all_bold}{msg}$RESET'
+    msg = _adjust_format_lengths(msg, use_color, all_bold)
+    msg = re.sub(r'\$(RESET|R(?!ED))', RESET + all_bold, msg)
+    msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
+    for color_word, color in _COLOR_WORD_TO_COLOR.items():
+        msg = msg.replace(f'${color_word}', color + all_bold)
     return msg
 
 
@@ -143,8 +142,8 @@ def _adjust_format_lengths(msg, use_color, all_bold):
     :param use_color: To know what adjustments need to be made.
     :type use_color: bool
 
-    :param all_bold: To know what adjustments need to be made.
-    :type all_bold: bool
+    :param all_bold: Bold sequence or empty string.
+    :type all_bold: str
 
     :return: msg with new formatted lengths.
     :rtype: str
