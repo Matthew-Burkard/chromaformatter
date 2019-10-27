@@ -18,7 +18,7 @@ if __name__ == '__main__':
     log.setLevel(logging.DEBUG)
 
     log.debug('This is a {} message.', 'debug')
-    log.info('This is a {} message.', 'info')
+    log.info('This is an {} message.', 'info')
     log.warning('This is a {} message.', 'warning')
     log.error('This is an {} message.', 'error')
     log.critical('This is a {} message.', 'critical')

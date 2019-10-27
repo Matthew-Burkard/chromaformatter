@@ -1,7 +1,6 @@
 build
 dist
 venv
-log/*
 .idea
 .vscode
 *__pycache__
