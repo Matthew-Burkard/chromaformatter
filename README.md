@@ -1,8 +1,14 @@
 # Chroma Logging
 ### A wrapper for the standard python logging module to add color.
 
-![Demo](docs/chroma_demo-colored.png)
-![Demo](docs/chroma_demo-uncolored.png)
+![Demo](docs/chroma_color.png)
+![Demo](docs/chroma_uncolored.png)
+
+## Installation
+Chroma Logging is on PyPI and can be installed with:
+```
+pip install chromalogging
+```
 
 ## Usage
 Chroma Logging is designed work just like the regular logging module
@@ -16,8 +22,7 @@ import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = ('[$GREEN%(asctime)s$R][%(levelname)-7s$R][$MAGENTA'
-              '%(filename)s$R:$MAGENTA%(lineno)-d$R]: %(message)s')
+log_format = logging.default_format_msg(levelname_min=6)
 formatter = logging.ChromaFormatter(log_format, use_color=True, all_bold=True)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)

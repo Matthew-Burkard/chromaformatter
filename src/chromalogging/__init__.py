@@ -18,7 +18,7 @@ color_map = {
     ERROR: Fore.LIGHTRED_EX,
     CRITICAL: Fore.RED,
     ARGS: Fore.WHITE,
-    BRACKET: RESET
+    BRACKET: Fore.WHITE
 }
 
 _COLOR_INPUT = '{}'
@@ -43,17 +43,42 @@ _COLOR_WORD_TO_COLOR = {
 }
 
 
+def default_format_msg(levelname_min=0, filename_min=0,
+                       lineno_min=0, asctime_min=0):
+    """Get a pre-configured format string for ChromaFormatter.
+
+    :param levelname_min: Minimum length for levelname, default 0.
+    :type levelname_min: int
+
+    :param filename_min: Minimum length for filename_len, default 0.
+    :type filename_min: int
+
+    :param lineno_min: Minimum length for lineno_len, default 0.
+    :type lineno_min: int
+
+    :param asctime_min: Minimum length for asctime_len, default 0.
+    :type asctime_min: int
+
+    :return: A format string.
+    :rtype: str
+    """
+    return (f'$GREEN[%(asctime){asctime_min}-s]'
+            f'$LEVEL[%(levelname)-{levelname_min}s$LEVEL]'
+            f'$MAGENTA[%(filename){filename_min}-s:'
+            f'%(lineno)-{lineno_min}d]$LEVEL: %(message)s')
+
+
 class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles"""
 
-    def __init__(self, msg, use_color, all_bold=False):
+    def __init__(self, msg, use_color=True, all_bold=True):
         """Create an instance of ChromaFormatter.
 
-        :param msg: The format string to determine how logs will
-        appear.
+        :param msg: The format string to determine how logs will appear.
         :type msg: str
 
-        :param use_color: Colors will be applied if True.
+        :param use_color: Colors will be applied if True, defaults to
+        False.
         :type use_color: bool
 
         :param all_bold: Whole log will be bold if True, defaults to
@@ -64,12 +89,21 @@ class ChromaFormatter(Formatter):
         self.all_bold = BOLD if all_bold else ''
         msg = _process_format_message(msg, use_color, self.all_bold)
         super().__init__(msg)
+        if use_color:
+            self._original_fmt = self._fmt
+            # noinspection PyProtectedMember
+            self._original_style_fmt = self._style._fmt
 
     def format(self, record):
+        # todo All brackets not in record.msg should get brackets color
+        #  if it is set. Brackets around formatted arguments should
+        #  default to the arguments color.
         _init_record(record)
         if not self.use_color or record.levelno not in color_map:
             record.msg = re.sub(r'{}', '[%s]', record.msg)
             return Formatter.format(self, record)
+        self._fmt = self._original_fmt
+        self._style._fmt = self._original_style_fmt
         bc = color_map[BRACKET] + self.all_bold
         ac = color_map[ARGS] + self.all_bold
         lc = color_map[record.levelno] + self.all_bold
@@ -77,6 +111,9 @@ class ChromaFormatter(Formatter):
         if record.args:
             record.msg = re.sub(r'{}', f'{bc}[{ac}%s{bc}]{lc}', record.msg)
         record.levelname = f'{lc}{record.levelname}{RESET}'
+        self._fmt = re.sub(r'\$LEVEL', lc, str(self._fmt))
+        # noinspection PyProtectedMember
+        self._style._fmt = re.sub(r'\$LEVEL', lc, str(self._style._fmt))
         return Formatter.format(self, record)
 
 
@@ -86,9 +123,9 @@ def _init_record(record):
     :param record: LogRecord to load with initial values.
     :type record: LogRecord
 
-    First time called with will add original values to a LogRecord,
-    as new parameters. Subsequent calls will reset a LogRecords
-    parameters back ot the originals.
+    First time called with will add original values to a LogRecord, as
+    new parameters. Subsequent calls will reset a LogRecords parameters
+    back ot the originals.
 
     This is so that other handlers won't have the colors inserted from
     previous ones.
