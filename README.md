@@ -16,20 +16,27 @@ except instead of a regular Formatter you use ChromaFormatter which
 takes a boolean to determine whether or not to apply color, and another
 boolean to determine whether to log in all bold.
 
-Then can include colors in the format string with a with $COLOR.
+To use a color in a log place $<COLOR_NAME_HERE> or $LEVEL to refer to
+the color of the logging level for a log:
 ```python
 import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = logging.default_format_msg(levelname_min=6)
+log_format = ('$GREEN[%(asctime)-s]'
+              '$LEVEL[%(levelname)-s$LEVEL]'
+              '$MAGENTA[%(filename)-s:'
+              '%(lineno)-d]$LEVEL: %(message)s')
 formatter = logging.ChromaFormatter(log_format, use_color=True, all_bold=True)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
 log.addHandler(handler)
 ```
 
-Any colorama colors work.
+Alternatively there is a default log msg that can be used.
+```python
+log_format = logging.default_format_msg(levelname_min=6)
+```
 
 Additionally $BOLD or $B applies bold text and $RESET or $R resets back
 to no colors or bold text.
@@ -43,8 +50,8 @@ By default the logging level colors are:
 - ERROR: Fore.LIGHTRED_EX
 - CRITICAL: Fore.RED
 
-Formatted arguments will be surrounded by brackets, the args and the
-brackets have configurable colors.
+Formatted arguments will be surrounded by brackets and have configurable
+colors.
 
 Colors can be changed as such:
 ```python
@@ -52,3 +59,4 @@ logging.color_map[logging.INFO] = logging.Fore.WHITE
 logging.color_map[logging.BRACKET] = logging.Fore.RED
 logging.color_map[logging.ARGS] = logging.Fore.MAGENTA
 ```
+Any colorama colors work.
