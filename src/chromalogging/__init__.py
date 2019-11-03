@@ -6,7 +6,7 @@ from colorama import init, Fore, Back, Style
 init()
 
 ARGS = -10
-BRACKET = -20
+BRACKETS = -20
 
 RESET = Fore.RESET + Back.RESET
 BOLD = Style.BRIGHT
@@ -18,7 +18,7 @@ color_map = {
     ERROR: Fore.LIGHTRED_EX,
     CRITICAL: Fore.RED,
     ARGS: Fore.WHITE,
-    BRACKET: Fore.WHITE
+    BRACKETS: ''
 }
 
 _COLOR_INPUT = '{}'
@@ -63,7 +63,7 @@ def default_format_msg(levelname_min=0, filename_min=0,
     :rtype: str
     """
     return (f'$GREEN[%(asctime){asctime_min}-s]'
-            f'$LEVEL[%(levelname)-{levelname_min}s$LEVEL]'
+            f'$LEVEL[%(levelname)-{levelname_min}s]'
             f'$MAGENTA[%(filename){filename_min}-s:'
             f'%(lineno)-{lineno_min}d]$LEVEL: %(message)s')
 
@@ -90,30 +90,28 @@ class ChromaFormatter(Formatter):
         msg = _process_format_message(msg, use_color, self.all_bold)
         super().__init__(msg)
         if use_color:
-            self._original_fmt = self._fmt
             # noinspection PyProtectedMember
             self._original_style_fmt = self._style._fmt
 
     def format(self, record):
-        # todo All brackets not in record.msg should get brackets color
-        #  if it is set. Brackets around formatted arguments should
-        #  default to the arguments color.
         _init_record(record)
         if not self.use_color or record.levelno not in color_map:
-            record.msg = re.sub(r'{}', '[%s]', record.msg)
+            record.msg = re.sub(r'(?<!{){}(?!})', '[%s]', record.msg)
             return Formatter.format(self, record)
-        self._fmt = self._original_fmt
         self._style._fmt = self._original_style_fmt
-        bc = color_map[BRACKET] + self.all_bold
+        bc = color_map[BRACKETS] + self.all_bold
         ac = color_map[ARGS] + self.all_bold
         lc = color_map[record.levelno] + self.all_bold
         record.msg = lc + record.msg
         if record.args:
-            record.msg = re.sub(r'{}', f'{bc}[{ac}%s{bc}]{lc}', record.msg)
-        record.levelname = f'{lc}{record.levelname}{RESET}'
-        self._fmt = re.sub(r'\$LEVEL', lc, str(self._fmt))
+            record.msg = re.sub(r'{}', f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
         # noinspection PyProtectedMember
         self._style._fmt = re.sub(r'\$LEVEL', lc, str(self._style._fmt))
+        # todo All brackets not in record.msg should get brackets color
+        #  if it is set.
+        # todo Before each bracket add bracket color, then after each
+        #  bracket set the colors and styles back to what they where
+        #  just before the newly added bracket color.
         return Formatter.format(self, record)
 
 
@@ -134,11 +132,9 @@ def _init_record(record):
     try:
         if record.consumed:
             record.msg = record.original_msg
-            record.levelname = record.original_lvl
             record.args = record.original_args
     except AttributeError:
         record.original_msg = record.msg
-        record.original_lvl = record.levelname
         record.original_args = record.args
         record.consumed = True
 
@@ -162,34 +158,8 @@ def _process_format_message(msg, use_color, all_bold):
     if not use_color:
         return re.sub(r'\$[A-Z_]+\b', '', msg)
     msg = f'{all_bold}{msg}$RESET'
-    msg = _adjust_format_lengths(msg, use_color, all_bold)
     msg = re.sub(r'\$(RESET|R(?!ED))', RESET + all_bold, msg)
     msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
     for color_word, color in _COLOR_WORD_TO_COLOR.items():
         msg = msg.replace(f'${color_word}', color + all_bold)
-    return msg
-
-
-def _adjust_format_lengths(msg, use_color, all_bold):
-    """Adjusts format lengths to account for the length of color codes.
-
-    :param msg: Original msg
-    :type msg: str
-
-    :param use_color: To know what adjustments need to be made.
-    :type use_color: bool
-
-    :param all_bold: Bold sequence or empty string.
-    :type all_bold: str
-
-    :return: msg with new formatted lengths.
-    :rtype: str
-    """
-    length_search = re.search(r'%\(levelname\)-([0-9]+)s', msg)
-    if not length_search:
-        return msg
-    length = int(length_search.group(1))
-    length += len(Fore.WHITE) * 3 if use_color else 0
-    length += len(Style.BRIGHT) if all_bold else 0
-    msg = re.sub(r'%\((levelname)\)-([0-9]+)s', fr'%(\1)-{length}s', msg)
     return msg
