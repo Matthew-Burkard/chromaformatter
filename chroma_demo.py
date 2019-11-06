@@ -25,6 +25,6 @@ if __name__ == '__main__':
     log.info(f'Info message with {"regular"} %s.', 'formatting')
 
     logging.color_map[logging.INFO] = logging.Fore.WHITE
-    logging.color_map[logging.BRACKETS] = logging.Fore.RED
-    logging.color_map[logging.ARGS] = logging.Fore.MAGENTA
+    logging.color_map[logging.BRACKETS] = logging.Fore.RESET
+    logging.color_map[logging.ARGS] = logging.Fore.CYAN
     log.info('Altered colors {} message.', 'info')

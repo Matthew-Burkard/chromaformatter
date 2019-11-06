@@ -22,7 +22,7 @@ color_map = {
 }
 
 _COLOR_INPUT = '{}'
-_COLOR_WORD_TO_COLOR = {
+_WORD_TO_COLOR = {
     'BLACK': Fore.BLACK,
     'RED': Fore.RED,
     'GREEN': Fore.GREEN,
@@ -44,7 +44,8 @@ _COLOR_WORD_TO_COLOR = {
 
 
 def default_format_msg(levelname_min=0, filename_min=0,
-                       lineno_min=0, asctime_min=0):
+                       lineno_min=0, asctime_min=0,
+                       ts_color='$MAGENTA', file_color='$GREEN'):
     """Get a pre-configured format string for ChromaFormatter.
 
     :param levelname_min: Minimum length for levelname, default 0.
@@ -59,15 +60,26 @@ def default_format_msg(levelname_min=0, filename_min=0,
     :param asctime_min: Minimum length for asctime_len, default 0.
     :type asctime_min: int
 
+    :param file_color: Color of the file in the log msg,
+        defaults to MAGENTA.
+    :type file_color: str
+
+    :param ts_color: Color of the timestamp in the log msg,
+        defaults to GREEN.
+    :type ts_color: str
+
+
     :return: A format string.
     :rtype: str
     """
-    return (f'$GREEN[%(asctime){asctime_min}-s]'
+    return (f'{file_color}[%(asctime){asctime_min}-s]'
             f'$LEVEL[%(levelname)-{levelname_min}s]'
-            f'$MAGENTA[%(filename){filename_min}-s:'
-            f'%(lineno)-{lineno_min}d]$LEVEL: %(message)s')
+            f'{ts_color}[%(filename){filename_min}-s:'
+            f'%(lineno)-{lineno_min}d]'
+            f'$LEVEL: %(message)s')
 
 
+# noinspection PyProtectedMember
 class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles"""
 
@@ -78,19 +90,18 @@ class ChromaFormatter(Formatter):
         :type msg: str
 
         :param use_color: Colors will be applied if True, defaults to
-        False.
+            False.
         :type use_color: bool
 
         :param all_bold: Whole log will be bold if True, defaults to
-        False.
+            False.
         :type all_bold: bool
         """
         self.use_color = use_color
         self.all_bold = BOLD if all_bold else ''
-        msg = _process_format_message(msg, use_color, self.all_bold)
+        msg = _format_message(msg, use_color, self.all_bold)
         super().__init__(msg)
         if use_color:
-            # noinspection PyProtectedMember
             self._original_style_fmt = self._style._fmt
 
     def format(self, record):
@@ -102,16 +113,25 @@ class ChromaFormatter(Formatter):
         bc = color_map[BRACKETS] + self.all_bold
         ac = color_map[ARGS] + self.all_bold
         lc = color_map[record.levelno] + self.all_bold
+        if color_map[BRACKETS]:
+            reg = '|'.join(
+                [re.escape(v) for k, v in _WORD_TO_COLOR.items()]
+                + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}']
+            )
+            segments = re.findall(f'((({reg})+)(.+?))(?={reg}|$)',
+                                  self._style._fmt)
+            color_segment = [(c[1], c[3]) for c in segments][:-1]
+            self._style._fmt = ''.join(
+                re.sub(r'([\[\]])',
+                       fr'{bc}\1{color}', part)
+                for color, part in color_segment
+            )
         record.msg = lc + record.msg
         if record.args:
-            record.msg = re.sub(r'{}', f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
-        # noinspection PyProtectedMember
+            record.msg = re.sub(r'(?<!{){}(?!})',
+                                f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
+
         self._style._fmt = re.sub(r'\$LEVEL', lc, str(self._style._fmt))
-        # todo All brackets not in record.msg should get brackets color
-        #  if it is set.
-        # todo Before each bracket add bracket color, then after each
-        #  bracket set the colors and styles back to what they where
-        #  just before the newly added bracket color.
         return Formatter.format(self, record)
 
 
@@ -139,14 +159,14 @@ def _init_record(record):
         record.consumed = True
 
 
-def _process_format_message(msg, use_color, all_bold):
+def _format_message(msg, use_color, all_bold):
     """Applies colors and styles where needed.
 
     :param msg: msg to format.
     :type msg: str
 
     :param use_color: Color words in msg will be replaced by colors if
-    True else they will be replaced with empty strings.
+        True else they will be replaced with empty strings.
     :type use_color: bool
 
     :param all_bold: Bold sequence or empty string.
@@ -160,6 +180,6 @@ def _process_format_message(msg, use_color, all_bold):
     msg = f'{all_bold}{msg}$RESET'
     msg = re.sub(r'\$(RESET|R(?!ED))', RESET + all_bold, msg)
     msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
-    for color_word, color in _COLOR_WORD_TO_COLOR.items():
+    for color_word, color in _WORD_TO_COLOR.items():
         msg = msg.replace(f'${color_word}', color + all_bold)
     return msg
