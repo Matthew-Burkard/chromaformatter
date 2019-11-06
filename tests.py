@@ -36,4 +36,4 @@ if __name__ == '__main__':
            brackets=logging.RESET)
     log_as(test_format, True,
            'Test message {} should be bold with no errors from repeat bolds.',
-           'five', brackets=logging.RESET)
+           'five', brackets=logging.BOLD)
