@@ -68,7 +68,6 @@ def default_format_msg(levelname_min=0, filename_min=0,
         defaults to GREEN.
     :type ts_color: str
 
-
     :return: A format string.
     :rtype: str
     """
@@ -109,30 +108,32 @@ class ChromaFormatter(Formatter):
         if not self.use_color or record.levelno not in color_map:
             record.msg = re.sub(r'(?<!{){}(?!})', '[%s]', record.msg)
             return Formatter.format(self, record)
+
         self._style._fmt = self._original_style_fmt
         bc = color_map[BRACKETS] + self.all_bold
         ac = color_map[ARGS] + self.all_bold
         lc = color_map[record.levelno] + self.all_bold
+
         if color_map[BRACKETS]:
-            reg = '|'.join(
-                [re.escape(v) for k, v in _WORD_TO_COLOR.items()]
-                + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}']
-            )
-            segments = re.findall(f'((({reg})+)(.+?))(?={reg}|$)',
-                                  self._style._fmt)
-            color_segment = [(c[1], c[3]) for c in segments][:-1]
-            self._style._fmt = ''.join(
-                re.sub(r'([\[\]])',
-                       fr'{bc}\1{color}', part)
-                for color, part in color_segment
-            )
+            self._color_brackets(bc)
+
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'(?<!{){}(?!})',
-                                f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
-
+                                f'{ac}{bc}[{ac}%s{bc}]{lc}',
+                                record.msg)
         self._style._fmt = re.sub(r'\$LEVEL', lc, str(self._style._fmt))
         return Formatter.format(self, record)
+
+    def _color_brackets(self, brackets_color):
+        reg = '|'.join([re.escape(v) for k, v in _WORD_TO_COLOR.items()]
+                       + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}|$'])
+        segments = re.findall(f'((({reg})+)(.+?))(?={reg})', self._style._fmt)
+        color_segment = [(c[1], c[3]) for c in segments][:-1]
+        self._style._fmt = ''.join(
+            re.sub(r'([\[\]])', fr'{brackets_color}\1{color}', part)
+            for color, part in color_segment
+        )
 
 
 def _init_record(record):
