@@ -66,8 +66,9 @@ All special codes:
 
 #### Additional Configuration
 
-Logging levels, brackets and the colors of formatted arguments can be
-changed.
+ChromaFormatter has a dict called color_map to determine the colors of
+other parts of the log msg. Logging levels, brackets and the colors of
+formatted arguments are all set in color_map.
 
 By default the colors are:
 
@@ -83,8 +84,8 @@ By default the colors are:
 
 To change colors:
 ```python
-logging.color_map[logging.INFO] = logging.Fore.WHITE
-logging.color_map[logging.BRACKETS] = logging.Fore.RED
-logging.color_map[logging.ARGS] = logging.Fore.MAGENTA
+formatter.color_map[logging.INFO] = logging.Fore.WHITE
+formatter.color_map[logging.BRACKETS] = logging.Fore.RED
+formatter.color_map[logging.ARGS] = logging.Fore.MAGENTA
 ```
 Any colorama colors work here.

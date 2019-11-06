@@ -1,25 +1,15 @@
 import re
 from logging import *
 
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
 
 init()
 
 ARGS = -10
 BRACKETS = -20
 
-RESET = Fore.RESET + Back.RESET
+RESET = Style.RESET_ALL
 BOLD = Style.BRIGHT
-
-color_map = {
-    DEBUG: Fore.BLUE,
-    INFO: Fore.CYAN,
-    WARNING: Fore.YELLOW,
-    ERROR: Fore.LIGHTRED_EX,
-    CRITICAL: Fore.RED,
-    ARGS: Fore.WHITE,
-    BRACKETS: ''
-}
 
 _COLOR_INPUT = '{}'
 _WORD_TO_COLOR = {
@@ -45,7 +35,7 @@ _WORD_TO_COLOR = {
 
 def default_format_msg(levelname_min=0, filename_min=0,
                        lineno_min=0, asctime_min=0,
-                       ts_color='$MAGENTA', file_color='$GREEN'):
+                       ts_color='$GREEN', file_color='$MAGENTA'):
     """Get a pre-configured format string for ChromaFormatter.
 
     :param levelname_min: Minimum length for levelname, default 0.
@@ -71,9 +61,9 @@ def default_format_msg(levelname_min=0, filename_min=0,
     :return: A format string.
     :rtype: str
     """
-    return (f'{file_color}[%(asctime){asctime_min}-s]'
+    return (f'{ts_color}[%(asctime){asctime_min}-s]'
             f'$LEVEL[%(levelname)-{levelname_min}s]'
-            f'{ts_color}[%(filename){filename_min}-s:'
+            f'{file_color}[%(filename){filename_min}-s:'
             f'%(lineno)-{lineno_min}d]'
             f'$LEVEL: %(message)s')
 
@@ -103,33 +93,45 @@ class ChromaFormatter(Formatter):
         if use_color:
             self._original_style_fmt = self._style._fmt
 
+        self.color_map = {
+            DEBUG: Fore.BLUE,
+            INFO: Fore.CYAN,
+            WARNING: Fore.YELLOW,
+            ERROR: Fore.LIGHTRED_EX,
+            CRITICAL: Fore.RED,
+            ARGS: Fore.WHITE,
+            BRACKETS: ''
+        }
+
     def format(self, record):
         _init_record(record)
-        if not self.use_color or record.levelno not in color_map:
+        if not self.use_color or record.levelno not in self.color_map:
             record.msg = re.sub(r'(?<!{){}(?!})', '[%s]', record.msg)
             return Formatter.format(self, record)
 
         self._style._fmt = self._original_style_fmt
-        bc = color_map[BRACKETS] + self.all_bold
-        ac = color_map[ARGS] + self.all_bold
-        lc = color_map[record.levelno] + self.all_bold
+        if self.all_bold:
+            self._style._fmt = re.sub(re.escape(BOLD), '', self._style._fmt)
 
-        if color_map[BRACKETS]:
+        bc = self.color_map[BRACKETS] + self.all_bold
+        ac = self.color_map[ARGS] + self.all_bold
+        lc = self.color_map[record.levelno] + self.all_bold
+
+        if self.color_map[BRACKETS]:
             self._color_brackets(bc)
 
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'(?<!{){}(?!})',
-                                f'{ac}{bc}[{ac}%s{bc}]{lc}',
-                                record.msg)
-        self._style._fmt = re.sub(r'\$LEVEL', lc, str(self._style._fmt))
+                                f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
+        self._style._fmt = re.sub(r'\$LEVEL', lc, self._style._fmt) + RESET
         return Formatter.format(self, record)
 
     def _color_brackets(self, brackets_color):
         reg = '|'.join([re.escape(v) for k, v in _WORD_TO_COLOR.items()]
                        + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}|$'])
         segments = re.findall(f'((({reg})+)(.+?))(?={reg})', self._style._fmt)
-        color_segment = [(c[1], c[3]) for c in segments][:-1]
+        color_segment = [(c[1], c[3]) for c in segments]
         self._style._fmt = ''.join(
             re.sub(r'([\[\]])', fr'{brackets_color}\1{color}', part)
             for color, part in color_segment

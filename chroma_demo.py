@@ -24,7 +24,7 @@ if __name__ == '__main__':
     log.info('Inserted {} get {} formatting.', 'arguments', 'special')
     log.info(f'Info message with {"regular"} %s.', 'formatting')
 
-    logging.color_map[logging.INFO] = logging.Fore.WHITE
-    logging.color_map[logging.BRACKETS] = logging.Fore.RESET
-    logging.color_map[logging.ARGS] = logging.Fore.CYAN
+    stream_formatter.color_map[logging.INFO] = logging.Fore.WHITE
+    stream_formatter.color_map[logging.BRACKETS] = logging.Fore.RESET
+    stream_formatter.color_map[logging.ARGS] = logging.Fore.CYAN
     log.info('Altered colors {} message.', 'info')
