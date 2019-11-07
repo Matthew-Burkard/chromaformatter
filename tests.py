@@ -31,8 +31,7 @@ if __name__ == '__main__':
     log_as(default, False, 'Test message {} should not be bold.', 'one')
     log_as(default, True, 'Test message {} should be bold.', 'two')
     log_as(default, False, 'Test message {} should not be bold.', 'three')
-    log_as(test_format, False,
-           'Test message {} should have bold ts.', 'four',
+    log_as(test_format, False, 'Test message {} should have bold ts.', 'four',
            brackets=logging.RESET)
     log_as(test_format, True,
            'Test message {} should be bold with no errors from repeat bolds.',

@@ -112,6 +112,7 @@ class ChromaFormatter(Formatter):
         self._style._fmt = self._original_style_fmt
         if self.all_bold:
             self._style._fmt = re.sub(re.escape(BOLD), '', self._style._fmt)
+            self._style._fmt = BOLD + self._style._fmt
 
         bc = self.color_map[BRACKETS] + self.all_bold
         ac = self.color_map[ARGS] + self.all_bold
