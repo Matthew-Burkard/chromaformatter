@@ -21,7 +21,7 @@ import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = logging.default_format_msg(levelname_min=6)
+log_format = logging.default_format_msg(levelname_min=5)
 formatter = logging.ChromaFormatter(log_format, use_color=True, all_bold=True)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)

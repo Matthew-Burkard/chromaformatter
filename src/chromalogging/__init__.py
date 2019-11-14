@@ -142,15 +142,15 @@ class ChromaFormatter(Formatter):
 def _init_record(record):
     """Makes certain a LogRecord will be using it's original values.
 
-    :param record: LogRecord to load with initial values.
-    :type record: LogRecord
-
     First time called with will add original values to a LogRecord, as
     new parameters. Subsequent calls will reset a LogRecords parameters
     back ot the originals.
 
     This is so that other handlers won't have the colors inserted from
     previous ones.
+
+    :param record: LogRecord to load with initial values.
+    :type record: LogRecord
     """
     record.msg = str(record.msg)
     try:

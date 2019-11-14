@@ -7,7 +7,7 @@ setup(
     license='MIT',
     author='Matthew Burkard',
     author_email='matthewjburkard@gmail.com',
-    description='Python logging module wrapper with colored output.',
+    description='Wrapper for the Python logging module to add color.',
     package_dir={'': 'src'},
     packages=['chromalogging'],
     long_description_content_type='text/markdown',
