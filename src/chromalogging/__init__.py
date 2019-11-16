@@ -79,11 +79,11 @@ class ChromaFormatter(Formatter):
         :type msg: str
 
         :param use_color: Colors will be applied if True, defaults to
-            False.
+            True.
         :type use_color: bool
 
         :param all_bold: Whole log will be bold if True, defaults to
-            False.
+            True.
         :type all_bold: bool
         """
         self.use_color = use_color
