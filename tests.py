@@ -36,3 +36,6 @@ if __name__ == '__main__':
     log_as(test_format, True,
            'Test message {} should be bold with no errors from repeat bolds.',
            'five', brackets=logging.BOLD)
+    log_as(test_format, True,
+           'Test message {} should be identical to test two.',
+           'six')

@@ -89,3 +89,19 @@ formatter.color_map[logging.BRACKETS] = logging.Fore.RED
 formatter.color_map[logging.ARGS] = logging.Fore.MAGENTA
 ```
 Any colorama colors work here.
+
+## Applying to Existing Loggers
+If you are using a third party module that uses the standard python
+logging module you can apply a ChromaFormatter as such:
+```python
+import sys
+
+import chromalogging as logging
+
+log_format = logging.default_format_msg()
+stream_formatter = logging.ChromaFormatter(log_format, True, True)
+stream_handler = logging.StreamHandler(stream=sys.stdout)
+
+flask_logger = logging.getLogger('werkzeug')
+flask_logger.addHandler(stream_handler)
+```

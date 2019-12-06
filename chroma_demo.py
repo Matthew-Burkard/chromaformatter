@@ -22,7 +22,9 @@ if __name__ == '__main__':
     log.error('This is an error message.')
     log.critical('This is a critical message.')
     log.info('Inserted {} get {} formatting.', 'arguments', 'special')
-    log.info(f'Info message with {"regular"} %s.', 'formatting')
+    reg = 'regular'
+    formatting = 'formatting'
+    log.info(f'Info message with {reg} {formatting}.')
 
     stream_formatter.color_map[logging.INFO] = logging.Fore.WHITE
     stream_formatter.color_map[logging.BRACKETS] = logging.Fore.RESET
