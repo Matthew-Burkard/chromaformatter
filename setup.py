@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='chromalogging',
-    version='0.1.0',
+    version='0.1.1',
     url='https://gitlab.com/mburkard/chroma-logging',
     license='MIT',
     author='Matthew Burkard',

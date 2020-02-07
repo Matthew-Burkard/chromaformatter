@@ -1,4 +1,5 @@
 import re
+import sys
 from logging import *
 
 from colorama import init, Fore, Style
@@ -68,6 +69,42 @@ def default_format_msg(levelname_min=0, filename_min=0,
             f'$LEVEL: %(message)s')
 
 
+def get_default_logger(level=None, name=None, filepath=None, **format_kwargs):
+    """Get a logger with default level, formatter, and handlers.
+
+    :param level: Logging level, defaults to DEBUG.
+    :type level: int
+
+    :param name: Optional logger name, default None.
+    :type name: str
+
+    :param filepath: Optional string if provided will create a file
+        handler using filepath.
+    :type filepath: str
+
+    :param format_kwargs: kwargs will be passed to
+        default_format_msg.
+    :type format_kwargs: typing.Any
+
+    :return: A logger with default formatting and a default stream
+        handler using stdout.
+    :rtype: Logger
+    """
+    logger = getLogger(name)
+    log_format = default_format_msg(*format_kwargs)
+    formatter = ChromaFormatter(log_format)
+    stream_handler = StreamHandler(stream=sys.stdout)
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    if filepath:
+        file_handler = FileHandler(filepath)
+        file_formatter = ChromaFormatter(log_format, False, False)
+        file_handler.setFormatter(file_formatter)
+        logger.addHandler(file_handler)
+    logger.setLevel(level or DEBUG)
+    return logger
+
+
 # noinspection PyProtectedMember
 class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles"""
@@ -109,19 +146,16 @@ class ChromaFormatter(Formatter):
             record.msg = re.sub(r'(?<!{){}(?!})', '[%s]', record.msg)
         if not self.use_color or record.levelno not in self.color_map:
             return Formatter.format(self, record)
-
         self._style._fmt = self._original_style_fmt
         if self.all_bold:
             self._style._fmt = re.sub(re.escape(BOLD), '', self._style._fmt)
             self._style._fmt = BOLD + self._style._fmt
-
+        # Shorthands for different colors.
         bc = self.color_map[BRACKETS] + self.all_bold
         ac = self.color_map[ARGS] + self.all_bold
         lc = self.color_map[record.levelno] + self.all_bold
-
         if self.color_map[BRACKETS]:
             self._color_brackets(bc)
-
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'(?<!{){}(?!})',
@@ -130,7 +164,7 @@ class ChromaFormatter(Formatter):
         return Formatter.format(self, record)
 
     def _color_brackets(self, brackets_color):
-        reg = '|'.join([re.escape(v) for k, v in _WORD_TO_COLOR.items()]
+        reg = '|'.join([re.escape(v) for _, v in _WORD_TO_COLOR.items()]
                        + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}|$'])
         segments = re.findall(f'((({reg})+)(.+?))(?={reg})', self._style._fmt)
         color_segment = [(c[1], c[3]) for c in segments]
@@ -141,11 +175,11 @@ class ChromaFormatter(Formatter):
 
 
 def _init_record(record):
-    """Makes certain a LogRecord will be using it's original values.
+    """Make certain a LogRecord will be using it's original values.
 
-    First time called with will add original values to a LogRecord, as
-    new parameters. Subsequent calls will reset a LogRecords parameters
-    back ot the originals.
+    First time called will add original values to a LogRecord, as new
+    parameters. Subsequent calls will reset a LogRecords parameters back
+    to the originals.
 
     This is so that other handlers won't have the colors inserted from
     previous ones.
@@ -165,7 +199,7 @@ def _init_record(record):
 
 
 def _format_message(msg, use_color, all_bold):
-    """Applies colors and styles where needed.
+    """Apply colors and styles where designated.
 
     :param msg: msg to format.
     :type msg: str

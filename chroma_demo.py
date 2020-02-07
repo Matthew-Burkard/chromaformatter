@@ -8,12 +8,11 @@ if __name__ == '__main__':
     file_formatter = logging.ChromaFormatter(log_format, False, False)
     file_handler = logging.FileHandler('log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
-    stream_formatter = logging.ChromaFormatter(log_format, True, True)
+    stream_formatter = logging.ChromaFormatter(log_format)
     stream_handler = logging.StreamHandler(stream=sys.stdout)
     stream_handler.setFormatter(stream_formatter)
     log.addHandler(stream_handler)
     log.addHandler(file_handler)
-
     log.setLevel(logging.DEBUG)
 
     log.debug('This is a debug message.')
