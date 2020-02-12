@@ -125,6 +125,7 @@ class ChromaFormatter(Formatter):
         """
         self.use_color = use_color
         self.all_bold = BOLD if all_bold else ''
+        self.add_brackets_to_args = True
         msg = _format_message(msg, use_color, self.all_bold)
         super().__init__(msg)
         if use_color:
@@ -143,8 +144,8 @@ class ChromaFormatter(Formatter):
     def format(self, record):
         _init_record(record)
         if not self.use_color or record.levelno not in self.color_map:
-            record.msg = re.sub(r'(?<!{){}(?!})', '[%s]', record.msg)
-        if not self.use_color or record.levelno not in self.color_map:
+            replace = '[%s]' if self.add_brackets_to_args else '%s'
+            record.msg = re.sub(r'(?<!{){}(?!})', replace, record.msg)
             return Formatter.format(self, record)
         self._style._fmt = self._original_style_fmt
         if self.all_bold:
@@ -159,7 +160,9 @@ class ChromaFormatter(Formatter):
         record.msg = lc + record.msg
         if record.args:
             record.msg = re.sub(r'(?<!{){}(?!})',
-                                f'{ac}{bc}[{ac}%s{bc}]{lc}', record.msg)
+                                f'{ac}{bc}[{ac}%s{bc}]{lc}'
+                                if self.add_brackets_to_args else
+                                f'{ac}%s{lc}', record.msg)
         self._style._fmt = re.sub(r'\$LEVEL', lc, self._style._fmt) + RESET
         return Formatter.format(self, record)
 
