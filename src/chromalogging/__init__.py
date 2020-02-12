@@ -69,7 +69,11 @@ def default_format_msg(levelname_min=0, filename_min=0,
             f'$LEVEL: %(message)s')
 
 
-def get_default_logger(level=None, name=None, filepath=None, **format_kwargs):
+def get_default_logger(level=None,
+                       name=None,
+                       filepath=None,
+                       format_string=None,
+                       **format_kwargs):
     """Get a logger with default level, formatter, and handlers.
 
     :param level: Logging level, defaults to DEBUG.
@@ -82,6 +86,11 @@ def get_default_logger(level=None, name=None, filepath=None, **format_kwargs):
         handler using filepath.
     :type filepath: str
 
+    :param format_string: Log format to pass to ChromaFormatter,
+        defaults to null. format_kwargs will be ignored if this is
+        provided.
+    :type format_string: str
+
     :param format_kwargs: kwargs will be passed to
         default_format_msg.
     :type format_kwargs: typing.Any
@@ -92,7 +101,7 @@ def get_default_logger(level=None, name=None, filepath=None, **format_kwargs):
     """
     logger = getLogger(name)
     log_format = default_format_msg(*format_kwargs)
-    formatter = ChromaFormatter(log_format)
+    formatter = ChromaFormatter(format_string or log_format)
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
