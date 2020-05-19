@@ -1,5 +1,7 @@
 import sys
 
+import colorama
+
 from src import chromalogging as logging
 
 if __name__ == '__main__':
@@ -25,9 +27,9 @@ if __name__ == '__main__':
     formatting = 'formatting'
     log.info(f'Info message with {reg} {formatting}.')
 
-    stream_formatter.color_map[logging.INFO] = logging.Fore.WHITE
-    stream_formatter.color_map[logging.BRACKETS] = logging.Fore.RESET
-    stream_formatter.color_map[logging.ARGS] = logging.Fore.CYAN
+    stream_formatter.color_map[logging.INFO] = colorama.Fore.WHITE
+    stream_formatter.color_map[logging.BRACKETS] = colorama.Fore.RESET
+    stream_formatter.color_map[logging.ARGS] = colorama.Fore.CYAN
     log.info('Altered colors {} message.', 'info')
 
     format_string = (f'$GREEN%(asctime)-s'

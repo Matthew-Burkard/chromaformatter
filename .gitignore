@@ -1,6 +1,7 @@
 build
 dist
 venv
+.mypy_cache
 .idea
 .vscode
 *__pycache__

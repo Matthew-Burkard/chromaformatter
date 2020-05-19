@@ -22,7 +22,7 @@ import chromalogging as logging
 
 log = logging.getLogger()
 log_format = logging.default_format_msg(levelname_min=5)
-formatter = logging.ChromaFormatter(log_format, use_color=True, all_bold=True)
+formatter = logging.ChromaFormatter(log_format)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
 log.addHandler(handler)
@@ -84,9 +84,9 @@ By default the colors are:
 
 To change colors:
 ```python
-formatter.color_map[logging.INFO] = logging.Fore.WHITE
-formatter.color_map[logging.BRACKETS] = logging.Fore.RED
-formatter.color_map[logging.ARGS] = logging.Fore.MAGENTA
+formatter.color_map[logging.INFO] = colorama.Fore.WHITE
+formatter.color_map[logging.BRACKETS] = colorama.Fore.RED
+formatter.color_map[logging.ARGS] = colorama.Fore.MAGENTA
 ```
 Any colorama colors work here.
 
@@ -99,7 +99,7 @@ import sys
 import chromalogging as logging
 
 log_format = logging.default_format_msg()
-stream_formatter = logging.ChromaFormatter(log_format, True, True)
+stream_formatter = logging.ChromaFormatter(log_format)
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 
 flask_logger = logging.getLogger('werkzeug')
