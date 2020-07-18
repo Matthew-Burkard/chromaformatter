@@ -11,10 +11,10 @@ pip install chromalogging
 ```
 
 ## Usage
-Chroma Logging is works just like the regular logging module except
-instead of a regular Formatter you use ChromaFormatter which takes a
-boolean to determine whether or not to apply color, and another boolean
-to determine whether to log in all bold.
+Chroma Logging works just like the regular logging module except instead
+of a regular Formatter it uses ChromaFormatter which takes a boolean
+to determine whether or not to apply color, and another boolean to
+determine whether to log in all bold.
 
 ```python
 import sys
