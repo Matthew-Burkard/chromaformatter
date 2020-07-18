@@ -45,15 +45,15 @@ def default_format_msg(levelname_min: int = 0,
             f'$LEVEL: %(message)s')
 
 
-def get_default_logger(level: Optional[int] = None,
-                       name: Optional[str] = None,
+def get_default_logger(name: Optional[str] = None,
+                       level: Optional[int] = None,
                        filepath: Optional[str] = None,
                        format_string: Optional[str] = None,
                        **format_kwargs: Any) -> Logger:
     """Get a logger with default level, formatter, and handlers.
 
-    :param level: Logging level, defaults to DEBUG.
     :param name: Optional logger name, default None.
+    :param level: Logging level, defaults to DEBUG.
     :param filepath: Optional string if provided will create a file
         handler using filepath.
     :param format_string: Log format to pass to ChromaFormatter,
