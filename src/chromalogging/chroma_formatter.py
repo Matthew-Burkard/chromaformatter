@@ -38,17 +38,18 @@ class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles."""
 
     def __init__(self, msg: str, use_color: bool = True,
-                 all_bold: bool = True) -> None:
+                 all_bold: bool = True, apply_brackets: bool = False) -> None:
         """Set ChromaFormatter properties.
 
         :param msg: The format string to determine how logs will appear.
-        :param use_color: Colors will be applied if True, defaults to
-            True.
-        :param all_bold: Whole log will be bold if True, defaults to
-            True.
+        :param use_color: Colors will be applied if True, default True.
+        :param all_bold: Whole log will be bold if True, default True.
+        :param apply_brackets: Surround formatted arguments with
+            brackets if True, default False.
         """
         self.use_color: bool = use_color
         self.add_brackets_to_args: bool = True
+        self.apply_brackets = apply_brackets
         self._bold: str = BOLD if all_bold else ''
         msg = _format_message(msg, use_color, self._bold)
         super().__init__(msg)
@@ -83,8 +84,9 @@ class ChromaFormatter(Formatter):
             self._color_brackets(bc)
         record.msg = lc + record.msg
         if record.args:
-            record.msg = re.sub(r'(?<!{){}(?!})',
-                                f'{ac}{bc}[{ac}%s{bc}]{lc}'
+            msg = f'{ac}{bc}[{ac}%s{bc}]{lc}' if self.apply_brackets \
+                else f'{ac}{ac}%s{lc}'
+            record.msg = re.sub(r'(?<!{){}(?!})', msg
                                 if self.add_brackets_to_args else
                                 f'{ac}%s{lc}', record.msg)
         self._style._fmt = re.sub(r'\$LEVEL', lc, self._style._fmt) + RESET
