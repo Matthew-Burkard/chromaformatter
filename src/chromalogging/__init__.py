@@ -38,9 +38,9 @@ def default_format_msg(levelname_min: int = 0,
     :param ts_color: Timestamp color in the log msg, defaults to GREEN.
     :return: A format string.
     """
-    return (f'{ts_color}[%(asctime){asctime_min}-s]'
+    return (f'{ts_color}[%(asctime)-{asctime_min}s]'
             f'$LEVEL[%(levelname)-{levelname_min}s]'
-            f'{file_color}[%(filename){filename_min}-s:'
+            f'{file_color}[%(filename)-{filename_min}s:'
             f'%(lineno)-{lineno_min}d]'
             f'$LEVEL: %(message)s')
 
