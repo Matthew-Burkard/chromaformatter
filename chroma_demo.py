@@ -22,10 +22,7 @@ if __name__ == '__main__':
     log.warning('This is a warning message.')
     log.error('This is an error message.')
     log.critical('This is a critical message.')
-    log.info('Inserted {} get {} formatting.', 'arguments', 'special')
-    reg = 'regular'
-    formatting = 'formatting'
-    log.info(f'Info message with {reg} {formatting}.')
+    log.info('Formatted {} get {} coloring.', 'arguments', 'special')
 
     stream_formatter.color_map[logging.INFO] = colorama.Fore.WHITE
     stream_formatter.color_map[logging.ARGS] = colorama.Fore.CYAN
@@ -36,7 +33,6 @@ if __name__ == '__main__':
                      ' $MAGENTA%(filename)-s:%(lineno)-0d'
                      '$LEVEL: %(message)s')
     formatter = logging.ChromaFormatter(format_string)
-    formatter.add_brackets_to_args = False
     handler = logging.StreamHandler(stream=sys.stdout)
     handler.setFormatter(formatter)
     log.removeHandler(stream_handler)

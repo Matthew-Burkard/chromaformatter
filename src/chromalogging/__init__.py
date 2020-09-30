@@ -6,8 +6,8 @@ from colorama import init
 
 from chromalogging.chroma_formatter import ARGS, RESET, BOLD, ChromaFormatter
 
-__all__ = ['ARGS', 'BRACKETS', 'RESET', 'BOLD', 'ChromaFormatter',
-           'default_format_msg', 'get_default_logger'] + \
+__all__ = ['ARGS', 'RESET', 'BOLD', 'ChromaFormatter', 'default_format_msg',
+           'get_default_logger'] + \
           ['BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',
            'FATAL', 'FileHandler', 'Filter', 'Formatter', 'Handler', 'INFO',
            'LogRecord', 'Logger', 'LoggerAdapter', 'NOTSET', 'NullHandler',
