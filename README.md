@@ -31,7 +31,7 @@ log.addHandler(handler)
 ##### Formatting
 Chroma Logging format message works the same as with the default logger
 except colors can be added. To use a color in a log use
-$<COLOR_NAME_HERE> to add a color. ```$LEVEL``` refer to the color of
+$<COLOR_NAME_HERE> to add a color. ```$LEVEL``` refers to the color of
 the logging level for a log:
 ```python
 log_format = ('$GREEN[%(asctime)-s]'
@@ -78,7 +78,7 @@ To change colors:
 formatter.color_map[logging.INFO] = colorama.Fore.WHITE
 formatter.color_map[logging.ARGS] = colorama.Fore.MAGENTA
 ```
-Any colorama colors work here.
+Any colorama color works here.
 
 ## Applying to Existing Loggers
 If you are using a third party module that uses the standard python
