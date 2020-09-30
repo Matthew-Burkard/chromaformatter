@@ -21,17 +21,18 @@ import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = logging.default_format_msg(levelname_min=5)
+log_format = logging.default_format_msg()
 formatter = logging.ChromaFormatter(log_format)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
 log.addHandler(handler)
 ```
 
-##### Custom Formatting
-Alternatively custom format messages can be made. To use a color in a
-log use $<COLOR_NAME_HERE> to add a color. $LEVEL or $Lto refer to the
-color of the logging level for a log:
+##### Formatting
+Chroma Logging format message works the same as with the default logger
+except colors can be added. To use a color in a log use
+$<COLOR_NAME_HERE> to add a color. ```$LEVEL``` refer to the color of
+the logging level for a log:
 ```python
 log_format = ('$GREEN[%(asctime)-s]'
               '$LEVEL[%(levelname)-s]'
@@ -52,23 +53,14 @@ All supported colors:
 | $CYAN    | $LI_CYAN    |
 | $WHITE   | $LI_WHITE   |
 
-Additionally $BOLD or $B applies bold text and $RESET or $R resets back
-to no colors or bold text.
-
-All special codes:
-
-| Verbose|Short Hand|
-| ------ |--------- |
-| $BOLD  | $B       |
-| $RESET | $R       |
-| $LEVEL | $L       |
+Additionally ```$BOLD ```applies bold text and ```$RESET``` resets back
+to no colors unless all_bold is True, then it resets to bold text.
 
 
 #### Additional Configuration
-
 ChromaFormatter has a dict called color_map to determine the colors of
-other parts of the log msg. Logging levels, brackets and the colors of
-formatted arguments are all set in color_map.
+other parts of the log msg. Logging levels and the colors of formatted
+arguments are all set in color_map.
 
 By default the colors are:
 
@@ -80,12 +72,10 @@ By default the colors are:
 | ERROR    | LIGHTRED_EX |
 | CRITICAL | RED         |
 | ARGS     | White       |
-| BRACKETS | None        |
 
 To change colors:
 ```python
 formatter.color_map[logging.INFO] = colorama.Fore.WHITE
-formatter.color_map[logging.BRACKETS] = colorama.Fore.RED
 formatter.color_map[logging.ARGS] = colorama.Fore.MAGENTA
 ```
 Any colorama colors work here.

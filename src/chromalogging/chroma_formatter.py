@@ -7,8 +7,6 @@ from chromalogging import (Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL,
                            LogRecord)
 
 ARGS = -10
-BRACKETS = -20
-
 RESET = Style.RESET_ALL
 BOLD = Style.BRIGHT
 
@@ -38,18 +36,14 @@ class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles."""
 
     def __init__(self, msg: str, use_color: bool = True,
-                 all_bold: bool = True, apply_brackets: bool = False) -> None:
+                 all_bold: bool = True) -> None:
         """Set ChromaFormatter properties.
 
         :param msg: The format string to determine how logs will appear.
         :param use_color: Colors will be applied if True, default True.
         :param all_bold: Whole log will be bold if True, default True.
-        :param apply_brackets: Surround formatted arguments with
-            brackets if True, default False.
         """
         self.use_color: bool = use_color
-        self.add_brackets_to_args: bool = True
-        self.apply_brackets = apply_brackets
         self._bold: str = BOLD if all_bold else ''
         msg = _format_message(msg, use_color, self._bold)
         super().__init__(msg)
@@ -62,45 +56,28 @@ class ChromaFormatter(Formatter):
             WARNING: Fore.YELLOW,
             ERROR: Fore.LIGHTRED_EX,
             CRITICAL: Fore.RED,
-            ARGS: Fore.WHITE,
-            BRACKETS: ''
+            ARGS: Fore.WHITE
         }
 
     def format(self, record: LogRecord) -> str:
         _init_record(record)
         if not self.use_color or record.levelno not in self.color_map:
-            replace = '[%s]' if self.add_brackets_to_args else '%s'
-            record.msg = re.sub(r'(?<!{){}(?!})', replace, record.msg)
+            record.msg = re.sub(r'(?<!{){}(?!})', '%s', record.msg)
             return Formatter.format(self, record)
         self._style._fmt = self._original_style_fmt
         if self._bold:
             self._style._fmt = re.sub(re.escape(BOLD), '', self._style._fmt)
             self._style._fmt = BOLD + self._style._fmt
         # Shorthands for different colors.
-        bc = self.color_map[BRACKETS] + self._bold
-        ac = self.color_map[ARGS] + self._bold
-        lc = self.color_map[record.levelno] + self._bold
-        if self.color_map[BRACKETS]:
-            self._color_brackets(bc)
-        record.msg = lc + record.msg
+        arg_color = self.color_map[ARGS] + self._bold
+        level_color = self.color_map[record.levelno] + self._bold
+        record.msg = level_color + record.msg
         if record.args:
-            msg = f'{ac}{bc}[{ac}%s{bc}]{lc}' if self.apply_brackets \
-                else f'{ac}{ac}%s{lc}'
-            record.msg = re.sub(r'(?<!{){}(?!})', msg
-                                if self.add_brackets_to_args else
-                                f'{ac}%s{lc}', record.msg)
-        self._style._fmt = re.sub(r'\$LEVEL', lc, self._style._fmt) + RESET
+            record.msg = re.sub(r'(?<!{){}(?!})',
+                                f'{arg_color}%s{level_color}', record.msg)
+        self._style._fmt = re.sub(r'\$LEVEL',
+                                  level_color, self._style._fmt) + RESET
         return Formatter.format(self, record)
-
-    def _color_brackets(self, brackets_color):
-        reg = '|'.join([re.escape(v) for _, v in _WORD_TO_COLOR.items()]
-                       + [fr'\$LEVEL|{re.escape(BOLD)}|{re.escape(RESET)}|$'])
-        segments = re.findall(f'((({reg})+)(.+?))(?={reg})', self._style._fmt)
-        color_segment = [(c[1], c[3]) for c in segments]
-        self._style._fmt = ''.join(
-            re.sub(r'([\[\]])', fr'{brackets_color}\1{color}', part)
-            for color, part in color_segment
-        )
 
 
 def _init_record(record: LogRecord) -> None:
@@ -138,8 +115,8 @@ def _format_message(msg: str, use_color: bool, bold: str) -> str:
     if not use_color:
         return re.sub(r'\$[A-Z_]+\b', '', msg)
     msg = f'{bold}{msg}$RESET'
-    msg = re.sub(r'\$(RESET|R(?!ED))', RESET + bold, msg)
-    msg = re.sub(r'\$(BOLD|B(?!LUE|LACK))', BOLD, msg)
+    msg = re.sub(r'\$(RESET)', RESET + bold, msg)
+    msg = re.sub(r'\$(BOLD)', BOLD, msg)
     for color_word, color in _WORD_TO_COLOR.items():
         msg = msg.replace(f'${color_word}', color + bold)
     return msg

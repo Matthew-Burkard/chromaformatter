@@ -6,7 +6,7 @@ from src import chromalogging as logging
 
 if __name__ == '__main__':
     log = logging.getLogger()
-    log_format = logging.default_format_msg(levelname_min=5)
+    log_format = logging.default_format_msg(levelname_min=8)
     file_formatter = logging.ChromaFormatter(log_format, False, False)
     file_handler = logging.FileHandler('log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
@@ -28,14 +28,13 @@ if __name__ == '__main__':
     log.info(f'Info message with {reg} {formatting}.')
 
     stream_formatter.color_map[logging.INFO] = colorama.Fore.WHITE
-    stream_formatter.color_map[logging.BRACKETS] = colorama.Fore.RESET
     stream_formatter.color_map[logging.ARGS] = colorama.Fore.CYAN
     log.info('Altered colors {} message.', 'info')
 
-    format_string = (f'$GREEN%(asctime)-s'
-                     f' $LEVEL%(levelname)-s'
-                     f' $MAGENTA%(filename)-s:%(lineno)-0d'
-                     f'$LEVEL: %(message)s')
+    format_string = ('$LEVEL%(levelname)-s'
+                     ' $GREEN%(asctime)-s'
+                     ' $MAGENTA%(filename)-s:%(lineno)-0d'
+                     '$LEVEL: %(message)s')
     formatter = logging.ChromaFormatter(format_string)
     formatter.add_brackets_to_args = False
     handler = logging.StreamHandler(stream=sys.stdout)

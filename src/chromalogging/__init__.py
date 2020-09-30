@@ -4,8 +4,7 @@ from typing import Optional, Any
 
 from colorama import init
 
-from chromalogging.chroma_formatter import (ARGS, BRACKETS, RESET, BOLD,
-                                            ChromaFormatter)
+from chromalogging.chroma_formatter import ARGS, RESET, BOLD, ChromaFormatter
 
 __all__ = ['ARGS', 'BRACKETS', 'RESET', 'BOLD', 'ChromaFormatter',
            'default_format_msg', 'get_default_logger'] + \
