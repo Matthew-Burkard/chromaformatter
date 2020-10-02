@@ -6,27 +6,28 @@ from colorama import init
 
 from chromalogging.chroma_formatter import ARGS, RESET, BOLD, ChromaFormatter
 
-__all__ = ['ARGS', 'RESET', 'BOLD', 'ChromaFormatter', 'default_format_msg',
-           'get_default_logger'] + \
-          ['BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',
-           'FATAL', 'FileHandler', 'Filter', 'Formatter', 'Handler', 'INFO',
-           'LogRecord', 'Logger', 'LoggerAdapter', 'NOTSET', 'NullHandler',
-           'StreamHandler', 'WARN', 'WARNING', 'addLevelName', 'basicConfig',
-           'captureWarnings', 'critical', 'debug', 'disable', 'error',
-           'exception', 'fatal', 'getLevelName', 'getLogger', 'getLoggerClass',
-           'info', 'log', 'makeLogRecord', 'setLoggerClass', 'shutdown',
-           'warn', 'warning', 'getLogRecordFactory', 'setLogRecordFactory',
-           'lastResort', 'raiseExceptions']
+__all__ = (
+    'ARGS', 'RESET', 'BOLD', 'ChromaFormatter', 'get_default_format_msg',
+    'get_default_logger', 'BASIC_FORMAT', 'CRITICAL', 'DEBUG', 'ERROR',
+    'FATAL', 'FileHandler', 'Filter', 'Formatter', 'Handler', 'INFO',
+    'LogRecord', 'Logger', 'LoggerAdapter', 'NOTSET', 'NullHandler',
+    'StreamHandler', 'WARN', 'WARNING', 'addLevelName', 'basicConfig',
+    'captureWarnings', 'critical', 'debug', 'disable', 'error', 'exception',
+    'fatal', 'getLevelName', 'getLogger', 'getLoggerClass', 'info', 'log',
+    'makeLogRecord', 'setLoggerClass', 'shutdown', 'warn', 'warning',
+    'getLogRecordFactory', 'setLogRecordFactory', 'lastResort',
+    'raiseExceptions'
+)
 
 init()
 
 
-def default_format_msg(levelname_min: int = 0,
-                       filename_min: int = 0,
-                       lineno_min: int = 0,
-                       asctime_min: int = 0,
-                       ts_color: str = '$GREEN',
-                       file_color: str = '$MAGENTA') -> str:
+def get_default_format_msg(levelname_min: int = 0,
+                           filename_min: int = 0,
+                           lineno_min: int = 0,
+                           asctime_min: int = 0,
+                           ts_color: str = '$GREEN',
+                           file_color: str = '$MAGENTA') -> str:
     """Get a pre-configured format string for ChromaFormatter.
 
     :param levelname_min: Minimum length for levelname, default 0.
@@ -63,7 +64,7 @@ def get_default_logger(name: Optional[str] = None,
         handler using stdout.
     """
     logger = getLogger(name)
-    log_format = default_format_msg(**format_kwargs)
+    log_format = get_default_format_msg(**format_kwargs)
     formatter = ChromaFormatter(format_string or log_format)
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setFormatter(formatter)

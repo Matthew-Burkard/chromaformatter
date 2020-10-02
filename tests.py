@@ -24,7 +24,7 @@ if __name__ == '__main__':
                    '$LEVEL[%(levelname)-8s]'
                    '$MAGENTA[%(filename)-s:'
                    '%(lineno)-d]$LEVEL: %(message)s')
-    default = logging.default_format_msg(8, 9, 3, 24)
+    default = logging.get_default_format_msg(8, 9, 3, 24)
 
     log_as(default, False, 'Test message {} should not be bold.', 'one')
     log_as(default, True, 'Test message {} should be bold.', 'two')

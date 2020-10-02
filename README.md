@@ -21,7 +21,7 @@ import sys
 import chromalogging as logging
 
 log = logging.getLogger()
-log_format = logging.default_format_msg()
+log_format = logging.get_default_format_msg()
 formatter = logging.ChromaFormatter(log_format)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
@@ -88,7 +88,7 @@ import sys
 
 import chromalogging as logging
 
-log_format = logging.default_format_msg()
+log_format = logging.get_default_format_msg()
 stream_formatter = logging.ChromaFormatter(log_format)
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 

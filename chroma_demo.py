@@ -6,7 +6,7 @@ from src import chromalogging as logging
 
 if __name__ == '__main__':
     log = logging.getLogger()
-    log_format = logging.default_format_msg(levelname_min=8)
+    log_format = logging.get_default_format_msg(levelname_min=8)
     file_formatter = logging.ChromaFormatter(log_format, False, False)
     file_handler = logging.FileHandler('log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
