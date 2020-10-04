@@ -66,8 +66,9 @@ log.info('Format {}.', 10)
 
 ### Additional Configuration
 ChromaFormatter has a dict called ```color_map``` to determine the
-colors of other parts of the log msg. Logging levels and the colors of
-formatted arguments are all set in color_map.
+colors of parts of the log msg that can't be configured from the format
+string passed into ChromaFormatter. Logging levels and the color of
+formatted arguments are set in color_map.
 
 By default the colors are:
 
@@ -80,12 +81,11 @@ By default the colors are:
 | CRITICAL | RED         |
 | ARGS     | White       |
 
-To change colors:
+To change color_map colors use colorama:
 ```python
-formatter.color_map[logging.INFO] = colorama.Fore.WHITE
-formatter.color_map[logging.ARGS] = colorama.Fore.MAGENTA
+formatter.color_map[chromalogging.INFO] = colorama.Fore.WHITE
+formatter.color_map[chromalogging.ARGS] = colorama.Fore.MAGENTA
 ```
-Any colorama color works here.
 
 ## Applying to Existing Loggers
 If you are using a third party module that uses the standard python
