@@ -33,7 +33,7 @@ _WORD_TO_COLOR: Dict[str, str] = {
 
 # noinspection PyProtectedMember
 class ChromaFormatter(Formatter):
-    """Extends logging.Formatter to add colors and styles."""
+    """Extended logging.Formatter to add colors and styles."""
 
     def __init__(self, msg: str, use_color: bool = True,
                  use_bold: bool = True) -> None:
@@ -76,7 +76,7 @@ class ChromaFormatter(Formatter):
             record.msg = re.sub(r'(?<!{){}(?!})',
                                 f'{arg_color}%s{level_color}', record.msg)
         self._style._fmt = re.sub(r'\$LEVEL',
-                                  level_color, self._style._fmt) + RESET
+                                  level_color, self._style._fmt)
         return Formatter.format(self, record)
 
 
