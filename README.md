@@ -1,8 +1,7 @@
 # Chroma Logging
 ### A wrapper for the standard python logging module to add color.
 
-![Demo](docs/chroma_color.png)
-![Demo](docs/chroma_uncolored.png)
+![Demo](docs/chroma_demo.png)
 
 ## Installation
 Chroma Logging is on PyPI and can be installed with:
