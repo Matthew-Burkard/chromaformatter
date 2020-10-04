@@ -36,15 +36,15 @@ class ChromaFormatter(Formatter):
     """Extends logging.Formatter to add colors and styles."""
 
     def __init__(self, msg: str, use_color: bool = True,
-                 all_bold: bool = True) -> None:
+                 use_bold: bool = True) -> None:
         """Set ChromaFormatter properties.
 
         :param msg: The format string to determine how logs will appear.
         :param use_color: Colors will be applied if True, default True.
-        :param all_bold: Whole log will be bold if True, default True.
+        :param use_bold: Whole log will be bold if True, default True.
         """
         self.use_color: bool = use_color
-        self._bold: str = BOLD if all_bold else ''
+        self._bold: str = BOLD if use_bold else ''
         msg = _format_message(msg, use_color, self._bold)
         super().__init__(msg)
         if use_color:
@@ -114,9 +114,9 @@ def _format_message(msg: str, use_color: bool, bold: str) -> str:
     """
     if not use_color:
         return re.sub(r'\$[A-Z_]+\b', '', msg)
-    msg = f'{bold}{msg}$RESET'
-    msg = re.sub(r'\$(RESET)', RESET + bold, msg)
-    msg = re.sub(r'\$(BOLD)', BOLD, msg)
+    msg = f'{bold}{msg}{RESET}'
+    msg = re.sub(r'\$RESET', RESET + bold, msg)
+    msg = re.sub(r'\$BOLD', BOLD, msg)
     for color_word, color in _WORD_TO_COLOR.items():
         msg = msg.replace(f'${color_word}', color + bold)
     return msg
