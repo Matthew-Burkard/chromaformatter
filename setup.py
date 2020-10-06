@@ -31,7 +31,7 @@ setup(
     long_description=open('README.md').read(),
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: GPL-3 License'
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=['colorama'],
     zip_safe=False
