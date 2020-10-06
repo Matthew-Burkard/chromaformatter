@@ -21,7 +21,7 @@ setup(
     name='chromalogging',
     version='1.0.0',
     url='https://gitlab.com/mburkard/chroma-logging',
-    license='MIT',
+    license='GNU General Public License v3 (GPLv3)',
     author='Matthew Burkard',
     author_email='matthewjburkard@gmail.com',
     description='Wrapper for the Python logging module to add color.',
