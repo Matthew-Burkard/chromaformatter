@@ -1,20 +1,20 @@
-# Chroma Logging
-### A wrapper to add color to the standard python logging module.
+# Chroma Formatter
+An extended Python logging formatter that adds color.
 
 ![Demo](docs/chroma_demo.png)
 
 ## Installation
-Chroma Logging is on PyPI and can be installed with:
+Chroma Formatter is on PyPI and can be installed with:
 ```
-pip install chromalogging
+pip install chromaformatter
 ```
 
 ## Usage
-Chroma Logging adds two features to the default logging module, colors
-can be added to the log format string, and formatted arguments in a log
-message can be colored. The syntax to add colors in the format string is
-```$COLOR_NAME_HERE``` to add a color. ```$LEVEL``` refers to the color
-of the logging level for a log.
+Chroma Formatter adds two features to the default logging formatter,
+colors can be added to the log format string, and formatted arguments in
+a log message can be colored. The syntax to add colors in the format
+string is ```$COLOR_NAME_HERE``` to add a color. ```$LEVEL``` refers to
+the color of the logging level for a log.
 ```python
 log_format = ('$GREEN[%(asctime)-s]'
               '$LEVEL[%(levelname)-s]'
@@ -22,19 +22,20 @@ log_format = ('$GREEN[%(asctime)-s]'
               '$LEVEL: %(message)s')
 ```
 
-To use, we use a chromalogging.ChromaFormatter rather than the
+To use, we use a chromaformatter.ChromaFormatter rather than the
 logging.Formatter.
 
 ```python
 import sys
-import chromalogging as logging
+import logging
+from chromaformatter import ChromaFormatter
 
 log = logging.getLogger()
 log_format = ('$GREEN[%(asctime)-s]'
               '$LEVEL[%(levelname)-s]'
               '$MAGENTA[%(filename)-s:%(lineno)-d]'
               '$LEVEL: %(message)s')
-formatter = logging.ChromaFormatter(log_format)
+formatter = ChromaFormatter(log_format)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
 log.addHandler(handler)
@@ -83,8 +84,8 @@ By default the colors are:
 
 To change color_map colors use colorama:
 ```python
-formatter.color_map[chromalogging.INFO] = colorama.Fore.WHITE
-formatter.color_map[chromalogging.ARGS] = colorama.Fore.MAGENTA
+formatter.color_map[chromaformatter.INFO] = colorama.Fore.WHITE
+formatter.color_map[chromaformatter.ARGS] = colorama.Fore.MAGENTA
 ```
 
 ## Applying to Existing Loggers
@@ -92,11 +93,16 @@ If you are using a third party module that uses the standard python
 logging module you can apply a ChromaFormatter as such:
 ```python
 import sys
+import logging
 
-import chromalogging as logging
+from chromaformatter import ChromaFormatter
 
-log_format = logging.get_default_format_msg()
-stream_formatter = logging.ChromaFormatter(log_format)
+log_format = ('$GREEN[%(asctime)-0s]'
+              '$LEVEL[%(levelname)-5s]'
+              '$MAGENTA[%(filename)-21s:'
+              '%(lineno)-3d]'
+              '$LEVEL: %(message)s')
+stream_formatter = ChromaFormatter(log_format)
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 
 flask_logger = logging.getLogger('werkzeug')

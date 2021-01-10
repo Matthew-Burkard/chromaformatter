@@ -1,31 +1,31 @@
 # Copyright © 2020 Matthew Burkard
 #
-# This file is part of Chroma Logging.
+# This file is part of Chroma Formatter.
 #
-# Chroma Logging is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Chroma Formatter is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
 #
-# Chroma Logging is distributed in the hope that it will be useful,
+# Chroma Formatter is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Chroma Logging.  If not, see <https://www.gnu.org/licenses/>.
+# along with Chroma Formatter.  If not, see <https://www.gnu.org/licenses/>.
 
 import re
+from logging import Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL, LogRecord
 from typing import Dict, Any
 
 from colorama import Fore, Style
 
-from chromalogging import (Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL,
-                           LogRecord)
+__all__ = ('ChromaFormatter',)
 
 ARGS = -10
-RESET = Style.RESET_ALL
-BOLD = Style.BRIGHT
+_RESET = Style.RESET_ALL
+_BOLD = Style.BRIGHT
 
 _WORD_TO_COLOR: Dict[str, str] = {
     'BLACK': Fore.BLACK,
@@ -61,7 +61,7 @@ class ChromaFormatter(Formatter):
         :param use_bold: Whole log will be bold if True, default True.
         """
         self.use_color: bool = use_color
-        self._bold: str = BOLD if use_bold else ''
+        self._bold: str = _BOLD if use_bold else ''
         msg = _format_message(msg, use_color, self._bold)
         super().__init__(msg)
         if use_color:
@@ -77,23 +77,28 @@ class ChromaFormatter(Formatter):
         }
 
     def format(self, record: LogRecord) -> str:
+        """Format and add colors to a log record.
+
+        :param record: LogRecord to format and color.
+        :return: The complete log record formatted and colored.
+        """
         _init_record(record)
         if not self.use_color or record.levelno not in self.color_map:
             record.msg = re.sub(r'(?<!{){}(?!})', '%s', record.msg)
             return Formatter.format(self, record)
         self._style._fmt = self._original_style_fmt
         if self._bold:
-            self._style._fmt = re.sub(re.escape(BOLD), '', self._style._fmt)
-            self._style._fmt = BOLD + self._style._fmt
+            self._style._fmt = re.sub(re.escape(_BOLD), '', self._style._fmt)
+            self._style._fmt = _BOLD + self._style._fmt
         # Shorthands for different colors.
         arg_color = self.color_map[ARGS] + self._bold
         level_color = self.color_map[record.levelno] + self._bold
+        # Color the record msg.
         record.msg = level_color + record.msg
         if record.args:
             record.msg = re.sub(r'(?<!{){}(?!})',
                                 f'{arg_color}%s{level_color}', record.msg)
-        self._style._fmt = re.sub(r'\$LEVEL',
-                                  level_color, self._style._fmt)
+        self._style._fmt = re.sub(r'\$LEVEL', level_color, self._style._fmt)
         return Formatter.format(self, record)
 
 
@@ -131,9 +136,9 @@ def _format_message(msg: str, use_color: bool, bold: str) -> str:
     """
     if not use_color:
         return re.sub(r'\$[A-Z_]+\b', '', msg)
-    msg = f'{bold}{msg}{RESET}'
-    msg = re.sub(r'\$RESET', RESET + bold, msg)
-    msg = re.sub(r'\$BOLD', BOLD, msg)
+    msg = f'{bold}{msg}{_RESET}'
+    msg = re.sub(r'\$RESET', _RESET + bold, msg)
+    msg = re.sub(r'\$BOLD', _BOLD, msg)
     for color_word, color in _WORD_TO_COLOR.items():
         msg = msg.replace(f'${color_word}', color + bold)
     return msg

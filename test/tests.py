@@ -1,35 +1,39 @@
 # Copyright © 2020 Matthew Burkard
 #
-# This file is part of Chroma Logging.
+# This file is part of Chroma Formatter.
 #
-# Chroma Logging is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Chroma Formatter is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
 #
-# Chroma Logging is distributed in the hope that it will be useful,
+# Chroma Formatter is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Chroma Logging.  If not, see <https://www.gnu.org/licenses/>.
-
+# along with Chroma Formatter.  If not, see <https://www.gnu.org/licenses/>.
+import logging
 import re
 import sys
 from pathlib import Path
 
 import colorama
 
-from src import chromalogging as logging
+from chromaformatter import ChromaFormatter
 
 log_path = '../log/test.log'
 log = logging.getLogger()
-log_format = logging.get_default_format_msg()
-file_formatter = logging.ChromaFormatter(log_format)
+log_format = ('$GREEN[%(asctime)-0s]'
+              '$LEVEL[%(levelname)-0s]'
+              '$MAGENTA[%(filename)-0s:'
+              '%(lineno)-0d]'
+              '$LEVEL: %(message)s')
+file_formatter = ChromaFormatter(log_format)
 file_handler = logging.FileHandler(log_path, mode='w')
 file_handler.setFormatter(file_formatter)
-stream_formatter = logging.ChromaFormatter(log_format)
+stream_formatter = ChromaFormatter(log_format)
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 stream_handler.setFormatter(stream_formatter)
 log.addHandler(stream_handler)
@@ -72,6 +76,3 @@ assert stream_formatter._style._fmt.encode() == (
     f'{b}{green}[%(asctime)-0s]{cyan}{b}[%(levelname)-0s]{magenta}[%('
     f'filename)-0s:%(lineno)-0d]{cyan}{b}: %(message)s{reset}'
 ).encode()
-
-# For the slower among us.
-assert bool("Epstein didn't kill himself.") is True
