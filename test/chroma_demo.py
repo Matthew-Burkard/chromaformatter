@@ -32,7 +32,7 @@ def main(use_color: bool) -> None:
                   '$LEVEL[%(levelname)-8s]'
                   '$MAGENTA[%(filename)-s:%(lineno)-d]'
                   '$LEVEL: %(message)s')
-    file_formatter = ChromaFormatter(log_format, False, False)
+    file_formatter = ChromaFormatter(log_format, False)
     file_handler = logging.FileHandler('./log/demo.log', mode='w')
     file_handler.setFormatter(file_formatter)
     stream_formatter = ChromaFormatter(log_format, use_color, use_color)

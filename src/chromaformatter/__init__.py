@@ -52,8 +52,10 @@ _WORD_TO_COLOR: Dict[str, str] = {
 class ChromaFormatter(Formatter):
     """Extended logging.Formatter to add colors and styles."""
 
-    def __init__(self, msg: str, use_color: bool = True,
-                 use_bold: bool = True) -> None:
+    def __init__(self,
+                 msg: str,
+                 use_color: bool = True,
+                 use_bold: bool = False) -> None:
         """Set ChromaFormatter properties.
 
         :param msg: The format string to determine how logs will appear.
