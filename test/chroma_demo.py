@@ -43,15 +43,15 @@ def main(use_color: bool) -> None:
     log.setLevel(logging.DEBUG)
 
     log.debug('This is a debug message.')
-    log.info('This is an info message.', )
+    log.info('This is an info message.')
     log.warning('This is a warning message.')
     log.error('This is an error message.')
     log.critical('This is a critical message.')
-    log.info('Formatted {} can get {} coloring.', 'arguments', 'custom')
+    log.info('Formatted %s can get %s coloring.', 'arguments', 'custom')
 
     stream_formatter.color_map[logging.INFO] = colorama.Fore.WHITE
     stream_formatter.color_map[chromaformatter.ARGS] = colorama.Fore.CYAN
-    log.info('Altered colors {} message.', 'info')
+    log.info('Altered colors %s message.', 'info')
 
     format_string = ('$LEVEL%(levelname)-s'
                      ' $GREEN%(asctime)-s'
@@ -62,7 +62,7 @@ def main(use_color: bool) -> None:
     handler.setFormatter(formatter)
     log.removeHandler(stream_handler)
     log.addHandler(handler)
-    log.info('New {} log format.', 'ChromaFormatter')
+    log.info('New %s log format.', 'ChromaFormatter')
 
 
 if __name__ == '__main__':

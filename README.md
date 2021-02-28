@@ -58,20 +58,19 @@ Additionally ```$BOLD``` applies bold text and ```$RESET``` resets back
 to no colors unless ```use_bold``` is True, then it resets to bold text.
 
 ### Formatted Arguments in a Log
-To apply color to a formatted argument in a log use ```{}``` as a
-placeholder for arguments. ChromaFormatter will substitute ```{}``` with
-any arguments passed in.
+By inserting a `%s` placeholder in your log message and passing the
+value in as a parameter, colors will be added.
 ```python
-log.info('Format {}.', 10)
+log.info('Format %s.', 10)
 ```
 
 ### Additional Configuration
 ChromaFormatter has a dict called ```color_map``` to determine the
 colors of parts of the log msg that can't be configured from the format
-string passed into ChromaFormatter. Logging levels and the color of
+string passed into ChromaFormatter. Logging levels, and the color of
 formatted arguments are set in color_map.
 
-By default the colors are:
+By default, the colors are:
 
 | Category | Color       |
 | -------- | ----------- |

@@ -86,7 +86,6 @@ class ChromaFormatter(Formatter):
         """
         _init_record(record)
         if not self.use_color or record.levelno not in self.color_map:
-            record.msg = re.sub(r'(?<!{){}(?!})', '%s', record.msg)
             return Formatter.format(self, record)
         self._style._fmt = self._original_style_fmt
         if self._bold:
@@ -98,7 +97,7 @@ class ChromaFormatter(Formatter):
         # Color the record msg.
         record.msg = level_color + record.msg
         if record.args:
-            record.msg = re.sub(r'(?<!{){}(?!})',
+            record.msg = re.sub(r'(?<!%)%s',
                                 f'{arg_color}%s{level_color}', record.msg)
         self._style._fmt = re.sub(r'\$LEVEL', level_color, self._style._fmt)
         return Formatter.format(self, record)

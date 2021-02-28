@@ -17,28 +17,12 @@
 import logging
 import re
 import sys
+import unittest
 from pathlib import Path
 
 import colorama
 
 from chromaformatter import ChromaFormatter
-
-log_path = '../log/test.log'
-log = logging.getLogger()
-log_format = ('$GREEN[%(asctime)-0s]'
-              '$LEVEL[%(levelname)-0s]'
-              '$MAGENTA[%(filename)-0s:'
-              '%(lineno)-0d]'
-              '$LEVEL: %(message)s')
-file_formatter = ChromaFormatter(log_format)
-file_handler = logging.FileHandler(log_path, mode='w')
-file_handler.setFormatter(file_formatter)
-stream_formatter = ChromaFormatter(log_format)
-stream_handler = logging.StreamHandler(stream=sys.stdout)
-stream_handler.setFormatter(stream_formatter)
-log.addHandler(stream_handler)
-log.addHandler(file_handler)
-log.setLevel(logging.DEBUG)
 
 # Shorthands
 reset = colorama.Style.RESET_ALL
@@ -48,31 +32,71 @@ magenta = colorama.Fore.MAGENTA
 cyan = colorama.Fore.CYAN
 white = colorama.Fore.WHITE
 
-# Test that formatter is what it should be.
-# noinspection PyProtectedMember
-assert stream_formatter._style._fmt.encode() == (
-    f'{b}{green}{b}[%(asctime)-0s]$LEVEL[%(levelname)-0s]{magenta}{b}[%('
-    f'filename)-0s:%(lineno)-0d]$LEVEL: %(message)s{reset}'
-).encode()
 
-# Test that a log message is colored as it should be.
-log.info('The answer is [{}]', 42)
-file_name = Path(__file__).name
-log_file_text = open(log_path).read()
-# Replace timestamp time with the text 'timestamp' to check against.
-log_file_text = re.sub(r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}]',
-                       '[timestamp]', log_file_text)
-# Replace the line number with the text 'lineno' to check against.
-log_file_text = re.sub(fr'\[({file_name}):\d+]',
-                       r'[\1:lineno]', log_file_text)
-assert log_file_text.encode() == (
-    f'{b}{green}[timestamp]{cyan}{b}[INFO]{magenta}[{file_name}:lineno]{cyan}'
-    f'{b}: {cyan}{b}The answer is [{white}{b}42{cyan}{b}]{reset}\n'
-).encode()
+class UtilTest(unittest.TestCase):
 
-# Test that formatter is updated based on log.
-# noinspection PyProtectedMember
-assert stream_formatter._style._fmt.encode() == (
-    f'{b}{green}[%(asctime)-0s]{cyan}{b}[%(levelname)-0s]{magenta}[%('
-    f'filename)-0s:%(lineno)-0d]{cyan}{b}: %(message)s{reset}'
-).encode()
+    def __init__(self, *args) -> None:
+        self.log_path = 'log/test.log'
+        self.log = logging.getLogger()
+        log_format = ('$GREEN[%(asctime)-0s]'
+                      '$LEVEL[%(levelname)-0s]'
+                      '$MAGENTA[%(filename)-0s:'
+                      '%(lineno)-0d]'
+                      '$LEVEL: %(message)s')
+        file_formatter = ChromaFormatter(log_format)
+        file_handler = logging.FileHandler(self.log_path, mode='w')
+        file_handler.setFormatter(file_formatter)
+        self.stream_formatter = ChromaFormatter(log_format)
+        stream_handler = logging.StreamHandler(stream=sys.stdout)
+        stream_handler.setFormatter(self.stream_formatter)
+        self.log.addHandler(stream_handler)
+        self.log.addHandler(file_handler)
+        self.log.setLevel(logging.DEBUG)
+        super(UtilTest, self).__init__(*args)
+
+    def test_formatter_style(self) -> None:
+        # noinspection PyProtectedMember
+        self.assertEqual(
+            self.stream_formatter._style._fmt.encode(),
+            f'{green}[%(asctime)-0s]$LEVEL'
+            f'[%(levelname)-0s]{magenta}[%(filename)-0s:%(lineno)-0d]'
+            f'$LEVEL: %(message)s{reset}'.encode()
+        )
+
+    def test_log_color(self) -> None:
+        # Test that a log message is colored as it should be.
+        self.log.info('The answer is [%s]', 42)
+        file_name = Path(__file__).name
+        with open(self.log_path) as f:
+            log_file_text = f.read()
+            # Replace timestamp time with the text 'timestamp' to check
+            # against.
+            log_file_text = re.sub(
+                r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}]',
+                '[timestamp]',
+                log_file_text
+            )
+            # Replace the line number with the text 'lineno' to check
+            # against.
+            log_file_text = re.sub(fr'\[({file_name}):\d+]',
+                                   r'[\1:lineno]', log_file_text)
+            self.assertEqual(
+                log_file_text.encode(),
+                f'{green}[timestamp]{cyan}[INFO]{magenta}'
+                f'[{file_name}:lineno]{cyan}'
+                f': {cyan}The answer is'
+                f' [{white}42{cyan}]{reset}\n'.encode()
+            )
+
+    def test_something(self) -> None:
+        # Test that formatter is updated based on log.
+        # noinspection PyProtectedMember
+        self.assertEqual(
+            self.stream_formatter._style._fmt.encode(),
+            f'{green}[%(asctime)-0s]{cyan}[%(levelname)-0s]{magenta}[%('
+            f'filename)-0s:%(lineno)-0d]{cyan}: %(message)s{reset}'.encode()
+        )
+
+
+if __name__ == '__main__':
+    unittest.main()
