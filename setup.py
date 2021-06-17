@@ -19,7 +19,7 @@ from setuptools import setup
 
 setup(
     name='chromaformatter',
-    version='4.0.0',
+    version='5.0.0',
     url='https://gitlab.com/mburkard/chroma-formatter',
     license='GNU General Public License v3 (GPLv3)',
     author='Matthew Burkard',

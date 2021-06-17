@@ -4,103 +4,96 @@ An extended Python logging formatter that adds color.
 ![Demo](docs/chroma_demo.png)
 
 ## Installation
+
 Chroma Formatter is on PyPI and can be installed with:
+
 ```
 pip install chromaformatter
 ```
 
 ## Usage
-Chroma Formatter adds two features to the default logging formatter,
-colors can be added to the log format string, and formatted arguments in
-a log message can be colored. The syntax to add colors in the format
-string is ```$COLOR_NAME_HERE``` to add a color. ```$LEVEL``` refers to
-the color of the logging level for a log.
+Chroma Formatter adds two features to the default logging formatter, colors can
+be added to the log format string, and formatted arguments in a log message can
+be colored. Colors can be inserted info the format string as such:
+
 ```python
-log_format = ('$GREEN[%(asctime)-s]'
-              '$LEVEL[%(levelname)-s]'
-              '$MAGENTA[%(filename)-s:%(lineno)-d]'
-              '$LEVEL: %(message)s')
+log_format = (
+    f'{Colors.Fore.GREEN}%(asctime)-s '
+    f'{Colors.LEVEL_COLOR}%(levelname).1s '
+    f'{Colors.Fore.MAGENTA}%(filename)-s:%(lineno)03d '
+    f'{Colors.LEVEL_COLOR}- %(message)s'
+)
 ```
 
-To use, we use a chromaformatter.ChromaFormatter rather than the
-logging.Formatter.
+Then, use chromaformatter.ChromaFormatter rather than logging.Formatter.
 
 ```python
 import sys
 import logging
-from chromaformatter import ChromaFormatter
+from chromaformatter import ChromaFormatter, Colors
 
 log = logging.getLogger()
-log_format = ('$GREEN[%(asctime)-s]'
-              '$LEVEL[%(levelname)-s]'
-              '$MAGENTA[%(filename)-s:%(lineno)-d]'
-              '$LEVEL: %(message)s')
-formatter = ChromaFormatter(log_format)
+log_format = (
+    f'{Colors.Fore.GREEN}%(asctime)-s '
+    f'{Colors.LEVEL_COLOR}%(levelname).1s '
+    f'{Colors.Fore.MAGENTA}%(filename)-s:%(lineno)03d '
+    f'{Colors.LEVEL_COLOR}- %(message)s'
+)
+formatter = ChromaFormatter(
+    fmt=log_format,
+    arg_start_color=Colors.Fore.WHITE,
+    arg_end_color=Colors.LEVEL_COLOR
+)
 handler = logging.StreamHandler(stream=sys.stdout)
 handler.setFormatter(formatter)
 log.addHandler(handler)
 ```
 
-All supported colors:
-
-| Regular  | Light       |
-| -------- | ----------- |
-| $BLACK   | $LI_BLACK   |
-| $RED     | $LI_RED     |
-| $GREEN   | $LI_GREEN   |
-| $YELLOW  | $LI_YELLOW  |
-| $BLUE    | $LI_BLUE    |
-| $MAGENTA | $LI_MAGENTA |
-| $CYAN    | $LI_CYAN    |
-| $WHITE   | $LI_WHITE   |
-
-Additionally ```$BOLD``` applies bold text and ```$RESET``` resets back
-to no colors unless ```use_bold``` is True, then it resets to bold text.
-
 ### Formatted Arguments in a Log
-By inserting a `%s` placeholder in your log message and passing the
-value in as a parameter, colors will be added.
+By setting `arg_start_color` for argument colors and `arg_end_color` for the
+rest of the string that comes after the argument, those colors will be applied
+to arguments.
+
 ```python
-log.info('Format %s.', 10)
+log.info('This %s will be colored.', 'variable')
 ```
 
 ### Additional Configuration
-ChromaFormatter has a dict called ```color_map``` to determine the
-colors of parts of the log msg that can't be configured from the format
-string passed into ChromaFormatter. Logging levels, and the color of
-formatted arguments are set in color_map.
+ChromaFormatter has a dict called `color_map` to determine the colors of each
+logging level.
 
 By default, the colors are:
 
-| Category | Color       |
-| -------- | ----------- |
-| DEBUG    | BLUE        |
-| INFO     | Cyan        |
-| WARNING  | YELLOW      |
-| ERROR    | LIGHTRED_EX |
-| CRITICAL | RED         |
-| ARGS     | White       |
+| Category | Color            |
+| -------- | ---------------- |
+| DEBUG    | Fore.BLUE        |
+| INFO     | Fore.Cyan        |
+| WARNING  | Fore.YELLOW      |
+| ERROR    | Fore.LIGHTRED_EX |
+| CRITICAL | Fore.RED         |
+| ARGS     | Fore.White       |
 
-To change color_map colors use colorama:
+Color map can be changed as such:
 ```python
-formatter.color_map[chromaformatter.INFO] = colorama.Fore.WHITE
-formatter.color_map[chromaformatter.ARGS] = colorama.Fore.MAGENTA
+formatter.color_map[logging.INFO] = Colors.Fore.WHITE
+formatter.color_map[logging.DEBUG] = Colors.Fore.MAGENTA
 ```
 
 ## Applying to Existing Loggers
-If you are using a third party module that uses the standard python
-logging module you can apply a ChromaFormatter as such:
+If you are using a third party module that uses the standard python logging
+module you can apply a ChromaFormatter as such:
 ```python
 import sys
 import logging
 
-from chromaformatter import ChromaFormatter
+from chromaformatter import ChromaFormatter, Colors
 
-log_format = ('$GREEN[%(asctime)-0s]'
-              '$LEVEL[%(levelname)-5s]'
-              '$MAGENTA[%(filename)-21s:'
-              '%(lineno)-3d]'
-              '$LEVEL: %(message)s')
+log_format = (
+    f'{Colors.Fore.GREEN}%(asctime)-s '
+    f'{Colors.LEVEL_COLOR}%(levelname).1s '
+    f'{Colors.Fore.MAGENTA}%(filename)-s:%(lineno)03d '
+    f'{Colors.LEVEL_COLOR}- %(message)s'
+)
 stream_formatter = ChromaFormatter(log_format)
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 

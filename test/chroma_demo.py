@@ -15,57 +15,47 @@
 # You should have received a copy of the GNU General Public License
 # along with Chroma Formatter.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
 import logging
+import sys
 
-import colorama
-
-import chromaformatter
-from chromaformatter import ChromaFormatter
+from chromaformatter import ChromaFormatter, Colors
 
 
-def main(use_color: bool) -> None:
-    log = logging.getLogger()
+def main() -> None:
+    log_format = (
+        f'{Colors.Style.BRIGHT}{Colors.Fore.GREEN}%(asctime)-s '
+        f'{Colors.Style.BRIGHT}{Colors.LEVEL_COLOR}%(levelname).1s '
+        f'{Colors.Style.BRIGHT}{Colors.Fore.MAGENTA}%(filename)-s:%(lineno)03d '
+        f'{Colors.Style.BRIGHT}{Colors.LEVEL_COLOR}- %(message)s'
+    )
+    formatter = ChromaFormatter(
+        log_format,
+        f'{Colors.Style.BRIGHT}{Colors.Fore.WHITE}',
+        f'{Colors.Style.BRIGHT}{Colors.LEVEL_COLOR}',
+    )
+    log_demo('colored', formatter)
+    log_format = \
+        '%(asctime)-s %(levelname).1s %(filename)-s:%(lineno)03d - %(message)s'
+    formatter = ChromaFormatter(log_format)
+    print()
+    log_demo('uncolored', formatter)
+
+
+def log_demo(name: str, formatter: ChromaFormatter) -> None:
+    log = logging.getLogger(name)
     while log.handlers:
         log.removeHandler(log.handlers.pop())
-    log_format = ('$GREEN[%(asctime)-s]'
-                  '$LEVEL[%(levelname)-8s]'
-                  '$MAGENTA[%(filename)-s:%(lineno)-d]'
-                  '$LEVEL: %(message)s')
-    file_formatter = ChromaFormatter(log_format, False)
-    file_handler = logging.FileHandler('./log/demo.log', mode='w')
-    file_handler.setFormatter(file_formatter)
-    stream_formatter = ChromaFormatter(log_format, use_color, use_color)
     stream_handler = logging.StreamHandler(stream=sys.stdout)
-    stream_handler.setFormatter(stream_formatter)
+    stream_handler.setFormatter(formatter)
     log.addHandler(stream_handler)
-    log.addHandler(file_handler)
     log.setLevel(logging.DEBUG)
 
-    log.debug('This is a debug message.')
-    log.info('This is an info message.')
-    log.warning('This is a warning message.')
-    log.error('This is an error message.')
-    log.critical('This is a critical message.')
-    log.info('Formatted %s can get %s coloring.', 'arguments', 'custom')
-
-    stream_formatter.color_map[logging.INFO] = colorama.Fore.WHITE
-    stream_formatter.color_map[chromaformatter.ARGS] = colorama.Fore.CYAN
-    log.info('Altered colors %s message.', 'info')
-
-    format_string = ('$LEVEL%(levelname)-s'
-                     ' $GREEN%(asctime)-s'
-                     ' $MAGENTA%(filename)-s:%(lineno)-0d'
-                     '$LEVEL: %(message)s')
-    formatter = ChromaFormatter(format_string, use_color, use_color)
-    handler = logging.StreamHandler(stream=sys.stdout)
-    handler.setFormatter(formatter)
-    log.removeHandler(stream_handler)
-    log.addHandler(handler)
-    log.info('New %s log format.', 'ChromaFormatter')
+    log.debug('Something %s.', 'technical')
+    log.info('Something %s.', 'normal')
+    log.warning('Something looks %s.', 'wrong')
+    log.error('Something is %s.', 'wrong')
+    log.critical('Something is %s.', 'very wrong')
 
 
 if __name__ == '__main__':
-    main(True)
-    print()
-    main(False)
+    main()
