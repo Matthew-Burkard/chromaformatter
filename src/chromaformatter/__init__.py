@@ -60,10 +60,8 @@ class ChromaFormatter(Formatter):
             DEBUG: Colors.Fore.BLUE,
             INFO: Colors.Fore.CYAN,
             WARNING: Colors.Fore.YELLOW,
-            # ERROR: Colors.Fore.LIGHTRED_EX,
-            # CRITICAL: Colors.Fore.RED
-            CRITICAL: Colors.Fore.LIGHTRED_EX,
-            ERROR: Colors.Fore.RED
+            ERROR: Colors.Fore.LIGHTRED_EX,
+            CRITICAL: Colors.Fore.RED
         }
 
     def format(self, record: LogRecord) -> str:
