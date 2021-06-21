@@ -64,14 +64,15 @@ logging level.
 
 By default, the colors are:
 
-| Category | Color            |
-| -------- | ---------------- |
-| DEBUG    | Fore.BLUE        |
-| INFO     | Fore.Cyan        |
-| WARNING  | Fore.YELLOW      |
-| ERROR    | Fore.LIGHTRED_EX |
-| CRITICAL | Fore.RED         |
-| ARGS     | Fore.White       |
+| Category | Color             |
+| -------- | ----------------- |
+| NOTSET   | Fore.LIGHTBLUE_EX |
+| DEBUG    | Fore.BLUE         |
+| INFO     | Fore.Cyan         |
+| WARNING  | Fore.YELLOW       |
+| ERROR    | Fore.LIGHTRED_EX  |
+| CRITICAL | Fore.RED          |
+| ARGS     | Fore.White        |
 
 Color map can be changed as such:
 ```python

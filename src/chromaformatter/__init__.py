@@ -16,7 +16,8 @@
 # along with Chroma Formatter.  If not, see <https://www.gnu.org/licenses/>.
 
 import re
-from logging import Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL, LogRecord
+from logging import (Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL,
+                     LogRecord, NOTSET)
 from typing import Dict, Optional
 
 import colorama
@@ -57,6 +58,7 @@ class ChromaFormatter(Formatter):
         self.arg_end_color = arg_end_color
 
         self.color_map: Dict[int, str] = {
+            NOTSET: Colors.Fore.LIGHTBLUE_EX,
             DEBUG: Colors.Fore.BLUE,
             INFO: Colors.Fore.CYAN,
             WARNING: Colors.Fore.YELLOW,
