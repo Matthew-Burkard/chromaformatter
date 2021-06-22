@@ -72,7 +72,7 @@ class ChromaFormatter(Formatter):
         :param record: LogRecord to format and color.
         :return: The complete log record formatted and colored.
         """
-        _init_record(record)
+        msg = str(record.msg)
         if record.levelno not in self.color_map:
             return super(ChromaFormatter, self).format(record)
         self._style._fmt = self._original_style_fmt
@@ -88,27 +88,6 @@ class ChromaFormatter(Formatter):
             Colors.LEVEL_COLOR,
             level_color
         )
-        return super(ChromaFormatter, self).format(record)
-
-
-def _init_record(record: LogRecord) -> None:
-    """Make certain a LogRecord will be using its original values.
-
-    First time called will add original values to a LogRecord as new
-    parameters. Subsequent calls will reset a LogRecords parameters back
-    to the originals.
-
-    This is so that other handlers won't have the colors inserted from
-    previous ones.
-
-    :param record: LogRecord to load with initial values.
-    """
-    record.msg = str(record.msg)
-    try:
-        if record.consumed:
-            record.msg = record.original_msg
-            record.args = record.original_args
-    except AttributeError:
-        record.original_msg = record.msg
-        record.original_args = record.args
-        record.consumed = True
+        s = super(ChromaFormatter, self).format(record)
+        record.msg = msg
+        return s
