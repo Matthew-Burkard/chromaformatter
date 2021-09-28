@@ -16,15 +16,14 @@
 # along with Chroma Formatter.  If not, see <https://www.gnu.org/licenses/>.
 
 import re
-from logging import (Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL,
-                     LogRecord, NOTSET)
+from logging import Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL, LogRecord, NOTSET
 from typing import Dict, Optional
 
 import colorama
 
 __all__ = (
-    'ChromaFormatter',
-    'Colors',
+    "ChromaFormatter",
+    "Colors",
 )
 
 
@@ -32,7 +31,7 @@ class Colors:
     Fore = colorama.Fore
     Back = colorama.Back
     Style = colorama.Style
-    LEVEL_COLOR = '$LEVEL'
+    LEVEL_COLOR = "$LEVEL"
 
 
 # noinspection PyProtectedMember
@@ -40,10 +39,10 @@ class ChromaFormatter(Formatter):
     """Extended logging.Formatter to add colors and styles."""
 
     def __init__(
-            self,
-            fmt: str,
-            arg_start_color: Optional[str] = None,
-            arg_end_color: Optional[str] = None
+        self,
+        fmt: str,
+        arg_start_color: Optional[str] = None,
+        arg_end_color: Optional[str] = None,
     ) -> None:
         """Set ChromaFormatter properties.
 
@@ -51,7 +50,7 @@ class ChromaFormatter(Formatter):
         :param arg_start_color: Color of formatted arguments.
         :param arg_end_color: Color after formatted arguments.
         """
-        fmt = f'{fmt}{Colors.Style.RESET_ALL}'
+        fmt = f"{fmt}{Colors.Style.RESET_ALL}"
         super().__init__(fmt)
         self._original_style_fmt = self._style._fmt
         self.arg_start_color = arg_start_color
@@ -63,7 +62,7 @@ class ChromaFormatter(Formatter):
             INFO: Colors.Fore.CYAN,
             WARNING: Colors.Fore.YELLOW,
             ERROR: Colors.Fore.LIGHTRED_EX,
-            CRITICAL: Colors.Fore.RED
+            CRITICAL: Colors.Fore.RED,
         }
 
     def format(self, record: LogRecord) -> str:
@@ -80,14 +79,11 @@ class ChromaFormatter(Formatter):
         # Color the record msg.
         if record.args and self.arg_start_color and self.arg_end_color:
             record.msg = re.sub(
-                r'(?<!%)%([-0.\d]*)([sd])',
-                fr'{self.arg_start_color}%\1\2{self.arg_end_color}',
-                record.msg
-            ).replace('$LEVEL', level_color)
-        self._style._fmt = self._style._fmt.replace(
-            Colors.LEVEL_COLOR,
-            level_color
-        )
+                r"(?<!%)%([-0.\d]*)([sd])",
+                fr"{self.arg_start_color}%\1\2{self.arg_end_color}",
+                record.msg,
+            ).replace("$LEVEL", level_color)
+        self._style._fmt = self._style._fmt.replace(Colors.LEVEL_COLOR, level_color)
         s = super(ChromaFormatter, self).format(record)
         record.msg = msg
         return s

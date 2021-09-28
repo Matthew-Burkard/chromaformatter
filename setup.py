@@ -18,21 +18,21 @@
 from setuptools import setup
 
 setup(
-    name='chromaformatter',
-    version='5.0.3',
-    url='https://gitlab.com/mburkard/chroma-formatter',
-    license='GNU General Public License v3 (GPLv3)',
-    author='Matthew Burkard',
-    author_email='matthewjburkard@gmail.com',
-    description='Wrapper for the Python logging module to add color.',
-    package_dir={'': 'src'},
-    packages=['chromaformatter'],
-    long_description_content_type='text/markdown',
-    long_description=open('README.md').read(),
+    name="chromaformatter",
+    version="5.0.4",
+    url="https://gitlab.com/mburkard/chroma-formatter",
+    license="GNU General Public License v3 (GPLv3)",
+    author="Matthew Burkard",
+    author_email="matthewjburkard@gmail.com",
+    description="Wrapper for the Python logging module to add color.",
+    package_dir={"": "src"},
+    packages=["chromaformatter"],
+    long_description_content_type="text/markdown",
+    long_description=open("README.md").read(),
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    install_requires=['colorama'],
-    zip_safe=False
+    install_requires=["colorama"],
+    zip_safe=False,
 )
