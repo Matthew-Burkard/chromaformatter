@@ -32,6 +32,7 @@ Then, use chromaformatter.ChromaFormatter rather than logging.Formatter.
 ```python
 import sys
 import logging
+
 from chromaformatter import ChromaFormatter, Colors
 
 log = logging.getLogger()
