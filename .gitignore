@@ -1,9 +1,9 @@
+*.egg-info/
+*__pycache__
+*sandbox*
+.idea
+.mypy_cache
+.vscode
 build
 dist
 venv
-.mypy_cache
-.idea
-.vscode
-*__pycache__
-*sandbox*
-*.egg-info/
