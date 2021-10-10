@@ -1,9 +1,21 @@
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
-# Chroma Formatter
-An extended Python logging formatter that adds color.
-
-![Demo](docs/chroma_demo.png)
+<div style="text-align: center">
+<!-- Title: -->
+  <h1>Chroma Formatter</h1>
+<!-- Labels: -->
+  <!-- First row: -->
+  <img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg"
+   height="20"
+   alt="License: AGPL v3">
+  <img src="https://img.shields.io/badge/code%20style-black-000000.svg"
+   height="20"
+   alt="Code style: black">
+  <img src="https://img.shields.io/pypi/v/chromaformatter.svg"
+   height="20"
+   alt="PyPI version">
+  <h3>Wrapper for Python logging formatter that adds color</h3>
+  <img src="https://gitlab.com/mburkard/chroma-formatter/-/raw/main/docs/chroma_demo.png"
+   alt="Demo">
+</div>
 
 ## Installation
 
