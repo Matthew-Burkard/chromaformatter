@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div align="center">
 <!-- Title: -->
   <h1>Chroma Formatter</h1>
 <!-- Labels: -->
