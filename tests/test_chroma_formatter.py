@@ -1,3 +1,4 @@
+"""Chroma Formatter unit tests."""
 import logging
 import re
 import sys
@@ -83,7 +84,3 @@ class UtilTest(unittest.TestCase):
             f"{Colors.Fore.CYAN}: %(message)s"
             f"{Colors.Style.RESET_ALL}".encode(),
         )
-
-
-if __name__ == "__main__":
-    unittest.main()
