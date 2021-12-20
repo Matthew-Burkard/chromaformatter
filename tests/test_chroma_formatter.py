@@ -73,7 +73,7 @@ class UtilTest(unittest.TestCase):
                 f" of the color sensation.{Colors.Style.RESET_ALL}\n".encode(),
             )
 
-    def test_something(self) -> None:
+    def test_format(self) -> None:
         # Test that formatter is updated based on log.
         # noinspection PyProtectedMember
         self.assertEqual(
