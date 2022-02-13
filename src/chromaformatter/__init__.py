@@ -1,8 +1,9 @@
+"""Provides ChromaFormatter class for styled logging output."""
 import re
 from logging import Formatter, DEBUG, INFO, WARNING, ERROR, CRITICAL, LogRecord, NOTSET
 from typing import Dict, Optional
 
-import colorama
+import colorama  # type: ignore
 
 __all__ = (
     "ChromaFormatter",
@@ -11,6 +12,8 @@ __all__ = (
 
 
 class Colors:
+    """Available colors for log formatter."""
+
     Fore = colorama.Fore
     Back = colorama.Back
     Style = colorama.Style
