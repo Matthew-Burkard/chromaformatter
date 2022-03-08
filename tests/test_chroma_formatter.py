@@ -1,5 +1,6 @@
 """Chroma Formatter unit tests."""
 import logging
+import os
 import re
 import sys
 import unittest
@@ -10,7 +11,8 @@ from chromaformatter import ChromaFormatter, Colors
 
 class UtilTest(unittest.TestCase):
     def __init__(self, *args) -> None:
-        self.log_path = "log/test.log"
+        self.log_path = f"{os.getcwd()}/log"
+        Path(self.log_path).mkdir(exist_ok=True)
         self.log = logging.getLogger()
         log_format = (
             f"{Colors.Fore.GREEN}[%(asctime)-0s]"
@@ -22,7 +24,7 @@ class UtilTest(unittest.TestCase):
         self.formatter = ChromaFormatter(
             log_format, Colors.Fore.WHITE, Colors.LEVEL_COLOR
         )
-        file_handler = logging.FileHandler(self.log_path, mode="w")
+        file_handler = logging.FileHandler(f"{self.log_path}/test.log", mode="w")
         file_handler.setFormatter(self.formatter)
         stream_handler = logging.StreamHandler(stream=sys.stdout)
         stream_handler.setFormatter(self.formatter)
@@ -49,7 +51,7 @@ class UtilTest(unittest.TestCase):
             "Newton",
         )
         file_name = Path(__file__).name
-        with open(self.log_path) as f:
+        with open(f"{self.log_path}/test.log") as f:
             log_file_text = f.read()
             # Replace timestamp time with the text 'timestamp' to check
             # against.
@@ -61,7 +63,7 @@ class UtilTest(unittest.TestCase):
             # Replace the line number with the text 'lineno' to check
             # against.
             log_file_text = re.sub(
-                fr"\[({file_name}):\d+]", r"[\1:lineno]", log_file_text
+                rf"\[({file_name}):\d+]", r"[\1:lineno]", log_file_text
             )
             self.assertEqual(
                 log_file_text.encode(),
@@ -77,10 +79,10 @@ class UtilTest(unittest.TestCase):
         # Test that formatter is updated based on log.
         # noinspection PyProtectedMember
         self.assertEqual(
-            self.formatter._style._fmt.encode(),
+            self.formatter._style._fmt.replace("$LEVEL", Colors.Fore.CYAN),
             f"{Colors.Fore.GREEN}[%(asctime)-0s]"
             f"{Colors.Fore.CYAN}[%(levelname)-0s]"
             f"{Colors.Fore.MAGENTA}[%(filename)-0s:%(lineno)-0d]"
             f"{Colors.Fore.CYAN}: %(message)s"
-            f"{Colors.Style.RESET_ALL}".encode(),
+            f"{Colors.Style.RESET_ALL}",
         )

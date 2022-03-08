@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chroma-formatter"
-version = "5.1.1"
+version = "5.1.2"
 description = "Wrapper for the Python logging formatter that adds color."
 readme = "README.md"
 repository = "https://gitlab.com/mburkard/chroma-formatter"
@@ -20,6 +20,7 @@ colorama = "^0.4.4"
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
 mypy = "^0.931"
+coverage = "^6.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
