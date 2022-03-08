@@ -28,13 +28,14 @@ class ChromaFormatter(Formatter):
         self,
         fmt: str,
         arg_start_color: Optional[str] = None,
-        arg_end_color: Optional[str] = None,
+        arg_end_color: Optional[str] = Colors.LEVEL_COLOR,
     ) -> None:
         """Set ChromaFormatter properties.
 
         :param fmt: The format string to determine how logs will appear.
         :param arg_start_color: Color of formatted arguments.
-        :param arg_end_color: Color after formatted arguments.
+        :param arg_end_color: Color after formatted arguments, defaults
+            to `Colors.LEVEL_COLOR`.
         """
         fmt = f"{fmt}{Colors.Style.RESET_ALL}"
         super().__init__(fmt)
