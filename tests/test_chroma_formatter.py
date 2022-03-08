@@ -12,6 +12,7 @@ from chromaformatter import ChromaFormatter, Colors
 class UtilTest(unittest.TestCase):
     def __init__(self, *args) -> None:
         self.log_path = f"{os.getcwd()}/log"
+        os.remove(f"{os.getcwd()}/log/test.log")
         Path(self.log_path).mkdir(exist_ok=True)
         self.log = logging.getLogger()
         log_format = (
@@ -26,9 +27,9 @@ class UtilTest(unittest.TestCase):
         )
         file_handler = logging.FileHandler(f"{self.log_path}/test.log", mode="w")
         file_handler.setFormatter(self.formatter)
-        stream_handler = logging.StreamHandler(stream=sys.stdout)
-        stream_handler.setFormatter(self.formatter)
-        self.log.addHandler(stream_handler)
+        self.stream_handler = logging.StreamHandler(stream=sys.stdout)
+        self.stream_handler.setFormatter(self.formatter)
+        self.log.addHandler(self.stream_handler)
         self.log.addHandler(file_handler)
         self.log.setLevel(logging.DEBUG)
         super(UtilTest, self).__init__(*args)
@@ -41,6 +42,16 @@ class UtilTest(unittest.TestCase):
             f"{Colors.Fore.MAGENTA}[%(filename)-0s:%(lineno)-0d]"
             f"{Colors.LEVEL_COLOR}: %(message)s"
             f"{Colors.Style.RESET_ALL}".encode(),
+        )
+
+    def test_custom_level(self) -> None:
+        log = logging.getLogger()
+        self.log.addHandler(self.stream_handler)
+        log.log(
+            100,
+            "It was not until [%s] that light was identified as the source of"
+            " the color sensation.",
+            "Newton",
         )
 
     def test_log_color(self) -> None:

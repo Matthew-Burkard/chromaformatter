@@ -59,10 +59,9 @@ class ChromaFormatter(Formatter):
         :return: The complete log record formatted and colored.
         """
         msg = str(record.msg)
-        if record.levelno not in self.color_map:
-            return super(ChromaFormatter, self).format(record)
+        level = record.levelno if record.levelno in self.color_map else NOTSET
         self._style._fmt = self._original_style_fmt
-        level_color = self.color_map[record.levelno]
+        level_color = self.color_map[level]
         # Color the record msg.
         if record.args and self.arg_start_color and self.arg_end_color:
             record.msg = re.sub(
