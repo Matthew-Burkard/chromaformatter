@@ -12,6 +12,9 @@
   <img src="https://img.shields.io/pypi/v/chromaformatter.svg"
    height="20"
    alt="PyPI version">
+  <img src="https://img.shields.io/badge/coverage-100%25-success"
+   height="20"
+   alt="Code Coverage">
   <h3>Wrapper for Python logging formatter that adds color</h3>
   <img src="https://gitlab.com/mburkard/chroma-formatter/-/raw/main/docs/chroma_demo.png"
    alt="Demo">
