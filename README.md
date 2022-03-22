@@ -15,6 +15,10 @@
   <img src="https://img.shields.io/badge/coverage-100%25-success"
    height="20"
    alt="Code Coverage">
+  <a href="https://www.codefactor.io/repository/github/matthew-burkard/chromaformatter">
+    <img src="https://www.codefactor.io/repository/github/matthew-burkard/chromaformatter/badge" 
+     alt="CodeFactor"/>
+  </a>
   <h3>Wrapper for Python logging formatter that adds color</h3>
   <img src="https://gitlab.com/mburkard/chroma-formatter/-/raw/main/docs/chroma_demo.png"
    alt="Demo">
@@ -29,9 +33,10 @@ pip install chromaformatter
 ```
 
 ## Usage
-Chroma Formatter adds two features to the default logging formatter, colors can
-be added to the log format string, and formatted arguments in a log message can
-be colored. Colors can be inserted info the format string as such:
+
+Chroma Formatter adds two features to the default logging formatter, colors can be added
+to the log format string, and formatted arguments in a log message can be colored.
+Colors can be inserted info the format string as such:
 
 ```python
 log_format = (
@@ -68,22 +73,23 @@ log.addHandler(handler)
 ```
 
 ### Formatted Arguments in a Log
-By setting `arg_start_color` for argument colors and `arg_end_color` for the
-rest of the string that comes after the argument, those colors will be applied
-to arguments.
+
+By setting `arg_start_color` for argument colors and `arg_end_color` for the rest of the
+string that comes after the argument, those colors will be applied to arguments.
 
 ```python
 log.info('This %s will be colored.', 'variable')
 ```
 
 ### Additional Configuration
-ChromaFormatter has a dict called `color_map` to determine the colors of each
-logging level.
+
+ChromaFormatter has a dict called `color_map` to determine the colors of each logging
+level.
 
 By default, the colors are:
 
 | Category | Color             |
-| -------- | ----------------- |
+|----------|-------------------|
 | NOTSET   | Fore.LIGHTBLUE_EX |
 | DEBUG    | Fore.BLUE         |
 | INFO     | Fore.Cyan         |
@@ -93,14 +99,17 @@ By default, the colors are:
 | ARGS     | Fore.White        |
 
 Color map can be changed as such:
+
 ```python
 formatter.color_map[logging.INFO] = Colors.Fore.WHITE
 formatter.color_map[logging.DEBUG] = Colors.Fore.MAGENTA
 ```
 
 ## Applying to Existing Loggers
-If you are using a third party module that uses the standard python logging
-module you can apply a ChromaFormatter as such:
+
+If you are using a third party module that uses the standard python logging module you
+can apply a ChromaFormatter as such:
+
 ```python
 import sys
 import logging
