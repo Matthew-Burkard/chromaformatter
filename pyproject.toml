@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chromaformatter"
-version = "5.3.7"
+version = "5.3.8"
 description = "Wrapper for the Python logging formatter that adds color."
 readme = "README.md"
 repository = "https://gitlab.com/mburkard/chroma-formatter"
