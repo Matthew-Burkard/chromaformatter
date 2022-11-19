@@ -15,10 +15,6 @@
   <img src="https://img.shields.io/badge/coverage-100%25-success"
    height="20"
    alt="Code Coverage">
-  <a href="https://www.codefactor.io/repository/github/matthew-burkard/chromaformatter">
-    <img src="https://www.codefactor.io/repository/github/matthew-burkard/chromaformatter/badge" 
-     alt="CodeFactor"/>
-  </a>
   <h3>Wrapper for Python logging formatter that adds color</h3>
   <img src="https://gitlab.com/mburkard/chroma-formatter/-/raw/main/docs/chroma_demo.png"
    alt="Demo">
