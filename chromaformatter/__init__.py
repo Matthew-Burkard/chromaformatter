@@ -5,10 +5,7 @@ from typing import Dict, Optional
 
 import colorama  # type: ignore
 
-__all__ = (
-    "ChromaFormatter",
-    "Colors",
-)
+__all__ = ("ChromaFormatter", "Colors")
 
 
 class Colors:
@@ -22,7 +19,7 @@ class Colors:
 
 # noinspection PyProtectedMember
 class ChromaFormatter(Formatter):
-    """Extended logging.Formatter to add colors and styles."""
+    """Extended `logging.Formatter` to add colors and styles."""
 
     def __init__(
         self,
@@ -66,7 +63,7 @@ class ChromaFormatter(Formatter):
         if record.args and self.arg_start_color and self.arg_end_color:
             record.msg = re.sub(
                 r"(?<!%)%([-0.\d]*)([sd])",
-                fr"{self.arg_start_color}%\1\2{self.arg_end_color}",
+                rf"{self.arg_start_color}%\1\2{self.arg_end_color}",
                 record.msg,
             ).replace("$LEVEL", level_color)
         self._style._fmt = self._style._fmt.replace(Colors.LEVEL_COLOR, level_color)

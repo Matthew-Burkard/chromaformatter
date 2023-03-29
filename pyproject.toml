@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chromaformatter"
-version = "5.3.14"
+version = "6.0.0"
 description = "Wrapper for the Python logging formatter that adds color."
 readme = "README.md"
 repository = "https://gitlab.com/mburkard/chroma-formatter"
@@ -9,8 +9,8 @@ license = "MIT"
 authors = ["Matthew Burkard <matthewjburkard@gmail.com>"]
 classifiers = ["Programming Language :: Python :: 3"]
 packages = [
-    { include = "src/chromaformatter/**/*.py" },
-    { include = "src/chromaformatter/**/py.typed" },
+    { include = "chromaformatter/**/*.py" },
+    { include = "chromaformatter/**/py.typed" },
 ]
 
 [tool.poetry.dependencies]
